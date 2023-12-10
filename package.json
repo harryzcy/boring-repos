@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "start": "node bin/src/main.js",
+    "start": "node bin/main.js",
     "clean": "rimraf coverage bin tmp",
     "prebuild": "npm run lint",
     "build": "tsc -p tsconfig.json",
