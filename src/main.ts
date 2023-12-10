@@ -6,6 +6,7 @@ import {
   getPrivateKey,
 } from './auth/info.js'
 import { getInstallationOctokit } from './auth/install.js'
+import { getForkedRepos } from './github.js'
 
 const appId = getAppID()
 const privateKey = await getPrivateKey()
@@ -18,6 +19,10 @@ const app = new App({
   oauth: { clientId, clientSecret },
 })
 
-await app.octokit.rest.apps.getAuthenticated()
+const resp = await app.octokit.rest.apps.getAuthenticated()
+if (resp.status !== 200) throw new Error('Failed to authenticate app')
 const octokit = await getInstallationOctokit(app)
-console.log(octokit)
+
+const repos = await getForkedRepos(octokit)
+const repoNames = repos.map((repo) => repo.name)
+console.log(repoNames)
