@@ -22,13 +22,6 @@ export function getUsername(): string {
   return process.env.GITHUB_USERNAME
 }
 
-export function getInstallationID(): number {
-  if (!process.env.GITHUB_USERNAME) {
-    throw new Error('GITHUB_USERNAME is not set')
-  }
-  return Number(process.env.INSTALLATION_ID)
-}
-
 export function getClientID(): string {
   if (!process.env.CLIENT_ID) {
     throw new Error('CLIENT_ID is not set')
