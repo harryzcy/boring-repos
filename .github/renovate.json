@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "config:recommended",
+    ":disableDependencyDashboard",
+    ":automergeMinor"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "postUpdateOptions": [
+    "npmDedupe"
+  ]
+}
