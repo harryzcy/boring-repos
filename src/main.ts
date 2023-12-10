@@ -1,1 +1,28 @@
-console.log('boring repos')
+import { App } from 'octokit'
+import {
+  getAppID,
+  getClientID,
+  getClientSecret,
+  getPrivateKey,
+} from './auth/info.js'
+import { getInstallationOctokit } from './auth/install.js'
+import { getForkedRepos } from './github.js'
+
+const appId = getAppID()
+const privateKey = await getPrivateKey()
+const clientId = getClientID()
+const clientSecret = getClientSecret()
+
+const app = new App({
+  appId,
+  privateKey,
+  oauth: { clientId, clientSecret },
+})
+
+const resp = await app.octokit.rest.apps.getAuthenticated()
+if (resp.status !== 200) throw new Error('Failed to authenticate app')
+const octokit = await getInstallationOctokit(app)
+
+const repos = await getForkedRepos(octokit)
+const repoNames = repos.map((repo) => repo.name)
+console.log(repoNames)
