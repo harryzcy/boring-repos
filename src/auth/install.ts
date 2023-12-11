@@ -1,7 +1,7 @@
-import { App } from 'octokit'
+import { App, Octokit } from 'octokit'
 import { getUsername } from './info.js'
 
-export async function getInstallationOctokit(app: App) {
+export const getInstallationOctokit = async (app: App) => {
   const username = getUsername()
   const { data } = await app.octokit.request(
     'GET /users/{username}/installation',
@@ -9,5 +9,21 @@ export async function getInstallationOctokit(app: App) {
       username: username,
     },
   )
-  return app.getInstallationOctokit(data.id)
+  return {
+    octokit: await app.getInstallationOctokit(data.id),
+    installationId: data.id,
+  }
+}
+
+export const getAccessToken = async (
+  octokit: Octokit,
+  installationId: number,
+) => {
+  const { data } = await octokit.request(
+    'POST /app/installations/{installation_id}/access_tokens',
+    {
+      installation_id: installationId,
+    },
+  )
+  return data.token
 }
