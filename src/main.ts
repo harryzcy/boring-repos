@@ -35,16 +35,8 @@ const run = async () => {
   const repos = await getForkedRepos(octokit)
 
   for (const repo of repos) {
-    try {
-      const repoDetail = await getRepository(
-        octokit,
-        repo.owner.login,
-        repo.name,
-      )
-      await fastForwardRepository(octokit, repoDetail, token, appUserID)
-    } catch (e) {
-      console.error(`Failed to fast-forward ${repo.full_name}`)
-    }
+    const repoDetail = await getRepository(octokit, repo.owner.login, repo.name)
+    await fastForwardRepository(octokit, repoDetail, token, appUserID)
   }
 }
 

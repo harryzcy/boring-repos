@@ -1,4 +1,5 @@
 import { exec } from 'child_process'
+import fs from 'fs'
 
 const TEMP_DIR = process.env.TEMP_DIR ?? '/tmp'
 const APP_NAME = 'boring-repos[bot]'
@@ -51,4 +52,8 @@ export const fastForwardMerge = async (repoDir: string, branch: string) => {
 
 export const pushChanges = async (repoDir: string, branch: string) => {
   await runCommand(`git -C ${repoDir} push origin ${branch}`)
+}
+
+export const deleteDirectory = async (repoDir: string) => {
+  await fs.promises.rm(repoDir, { recursive: true })
 }

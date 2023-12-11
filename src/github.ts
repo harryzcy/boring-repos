@@ -3,6 +3,7 @@ import { Octokit } from 'octokit'
 import {
   addUpstream,
   cloneRepository,
+  deleteDirectory,
   fastForwardMerge,
   fetchUpstream,
   getDefaultBranch,
@@ -54,21 +55,26 @@ export const fastForwardRepository = async (
   token: string,
   appUserID: number,
 ) => {
-  const cloneURL = repo.clone_url.replace(
-    'https://',
-    `https://x-oauth-basic:${token}@`,
-  )
-  const repoDir = await cloneRepository(cloneURL, repo.name)
-  await updateCommitter(repoDir, appUserID)
+  try {
+    const cloneURL = repo.clone_url.replace(
+      'https://',
+      `https://x-oauth-basic:${token}@`,
+    )
+    const repoDir = await cloneRepository(cloneURL, repo.name)
+    await updateCommitter(repoDir, appUserID)
 
-  if (!repo.parent) throw new Error('No parent repo')
-  await addUpstream(repoDir, repo.parent.clone_url)
-  await fetchUpstream(repoDir)
-  const branch = await getDefaultBranch(repoDir)
-  if (branch !== 'main' && branch !== 'master') {
-    throw new Error(`Unexpected default branch: ${branch}`)
+    if (!repo.parent) throw new Error('No parent repo')
+    await addUpstream(repoDir, repo.parent.clone_url)
+    await fetchUpstream(repoDir)
+    const branch = await getDefaultBranch(repoDir)
+    if (branch !== 'main' && branch !== 'master') {
+      throw new Error(`Unexpected default branch: ${branch}`)
+    }
+
+    await fastForwardMerge(repoDir, branch)
+    await pushChanges(repoDir, branch)
+    await deleteDirectory(repoDir)
+  } catch (e) {
+    console.error(`Failed to fast-forward ${repo.full_name}`, e)
   }
-
-  await fastForwardMerge(repoDir, branch)
-  await pushChanges(repoDir, branch)
 }
