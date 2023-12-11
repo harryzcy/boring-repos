@@ -38,5 +38,5 @@ export async function getPrivateKey(): Promise<string> {
     return buffer.toString()
   }
 
-  throw new Error('PRIVATE_KEY_FILE is not set')
+  throw new Error('either PRIVATE_KEY or PRIVATE_KEY_FILE must be set')
 }
