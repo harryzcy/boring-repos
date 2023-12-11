@@ -31,5 +31,5 @@ jobs:
           APP_ID: ${{ secrets.APP_ID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          PRIVATE_KEY_FILE: ${{ secrets.PRIVATE_KEY_FILE }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           GITHUB_USERNAME: harryzcy
