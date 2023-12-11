@@ -26,7 +26,7 @@ export const cloneRepository = async (gitURL: string, repoName: string) => {
 export const updateCommitter = async (repoDir: string, appUserID: number) => {
   await runCommand(`git -C ${repoDir} config user.name ${APP_NAME}`)
   await runCommand(
-    `git -C ${repoDir} config user.email ${appUserID}+${APP_NAME}@users.noreply.github.com"`,
+    `git -C ${repoDir} config user.email "${appUserID}+${APP_NAME}@users.noreply.github.com"`,
   )
 }
 
@@ -47,4 +47,8 @@ export const getDefaultBranch = async (repoDir: string) => {
 
 export const fastForwardMerge = async (repoDir: string, branch: string) => {
   await runCommand(`git -C ${repoDir} merge --ff-only upstream/${branch}`)
+}
+
+export const pushChanges = async (repoDir: string, branch: string) => {
+  await runCommand(`git -C ${repoDir} push origin ${branch}`)
 }

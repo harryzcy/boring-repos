@@ -6,6 +6,7 @@ import {
   fastForwardMerge,
   fetchUpstream,
   getDefaultBranch,
+  pushChanges,
   updateCommitter,
 } from './git.js'
 
@@ -64,5 +65,10 @@ export const fastForwardRepository = async (
   await addUpstream(repoDir, repo.parent.clone_url)
   await fetchUpstream(repoDir)
   const branch = await getDefaultBranch(repoDir)
+  if (branch !== 'main' && branch !== 'master') {
+    throw new Error(`Unexpected default branch: ${branch}`)
+  }
+
   await fastForwardMerge(repoDir, branch)
+  await pushChanges(repoDir, branch)
 }
