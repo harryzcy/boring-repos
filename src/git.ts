@@ -1,6 +1,7 @@
 import { exec } from 'child_process'
 
 const TEMP_DIR = process.env.TEMP_DIR ?? '/tmp'
+const APP_NAME = 'boring-repos[bot]'
 
 const runCommand = async (cmd: string): Promise<string> => {
   return new Promise(function (resolve, reject) {
@@ -20,6 +21,13 @@ export const cloneRepository = async (gitURL: string, repoName: string) => {
   const targetDir = `${TEMP_DIR}/${repoName}-${ts}`
   await runCommand(`git clone ${gitURL} ${targetDir}`)
   return targetDir
+}
+
+export const updateCommitter = async (repoDir: string, appUserID: number) => {
+  await runCommand(`git -C ${repoDir} config user.name ${APP_NAME}`)
+  await runCommand(
+    `git -C ${repoDir} config user.email ${appUserID}+${APP_NAME}@users.noreply.github.com"`,
+  )
 }
 
 export const addUpstream = async (repoDir: string, upstreamURL: string) => {

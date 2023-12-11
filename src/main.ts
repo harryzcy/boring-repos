@@ -5,9 +5,10 @@ import {
   getClientSecret,
   getPrivateKey,
 } from './auth/info.js'
-import { getInstallationOctokit } from './auth/install.js'
+import { getAccessToken, getInstallationOctokit } from './auth/install.js'
 import {
   fastForwardRepository,
+  getAppUserID,
   getForkedRepos,
   getRepository,
 } from './github.js'
@@ -25,8 +26,12 @@ const app = new App({
 
 const resp = await app.octokit.rest.apps.getAuthenticated()
 if (resp.status !== 200) throw new Error('Failed to authenticate app')
-const octokit = await getInstallationOctokit(app)
+const { octokit, installationId } = await getInstallationOctokit(app)
+
+const appUserID = await getAppUserID(octokit)
+const token = await getAccessToken(octokit, installationId)
 
 const repos = await getForkedRepos(octokit)
 const repo = await getRepository(octokit, repos[0].owner.login, repos[0].name)
-await fastForwardRepository(octokit, repo)
+
+await fastForwardRepository(octokit, repo, token, appUserID)

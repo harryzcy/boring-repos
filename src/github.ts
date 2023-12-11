@@ -6,6 +6,7 @@ import {
   fastForwardMerge,
   fetchUpstream,
   getDefaultBranch,
+  updateCommitter,
 } from './git.js'
 
 export type GetForkedRepositoriesResponse =
@@ -15,6 +16,13 @@ type GetRepositoryResponse =
   Endpoints['GET /repos/{owner}/{repo}']['response']['data']
 
 const IGNORE_REPOS = process.env.IGNORE_REPOS?.split(',') ?? []
+
+export const getAppUserID = async (octokit: Octokit): Promise<number> => {
+  const response = await octokit.request('GET /users/{username}', {
+    username: 'boring-repos[bot]',
+  })
+  return response.data.id
+}
 
 export const getForkedRepos = async (
   octokit: Octokit,
@@ -42,8 +50,16 @@ export const getRepository = async (
 export const fastForwardRepository = async (
   octokit: Octokit,
   repo: GetRepositoryResponse,
+  token: string,
+  appUserID: number,
 ) => {
-  const repoDir = await cloneRepository(repo.clone_url, repo.name)
+  const cloneURL = repo.clone_url.replace(
+    'https://',
+    `https://x-oauth-basic:${token}@`,
+  )
+  const repoDir = await cloneRepository(cloneURL, repo.name)
+  await updateCommitter(repoDir, appUserID)
+
   if (!repo.parent) throw new Error('No parent repo')
   await addUpstream(repoDir, repo.parent.clone_url)
   await fetchUpstream(repoDir)
