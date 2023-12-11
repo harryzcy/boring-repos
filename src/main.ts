@@ -6,7 +6,11 @@ import {
   getPrivateKey,
 } from './auth/info.js'
 import { getInstallationOctokit } from './auth/install.js'
-import { getForkedRepos } from './github.js'
+import {
+  fastForwardRepository,
+  getForkedRepos,
+  getRepository,
+} from './github.js'
 
 const appId = getAppID()
 const privateKey = await getPrivateKey()
@@ -24,5 +28,5 @@ if (resp.status !== 200) throw new Error('Failed to authenticate app')
 const octokit = await getInstallationOctokit(app)
 
 const repos = await getForkedRepos(octokit)
-const repoNames = repos.map((repo) => repo.name)
-console.log(repoNames)
+const repo = await getRepository(octokit, repos[0].owner.login, repos[0].name)
+await fastForwardRepository(octokit, repo)
