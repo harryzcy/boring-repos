@@ -16,8 +16,6 @@ const runCommand = async (cmd: string): Promise<string> => {
 }
 
 export const cloneRepository = async (gitURL: string, repoName: string) => {
-  console.log(`Cloning ${gitURL} into ${TEMP_DIR}`)
-
   const ts = Math.floor(Date.now() / 1000)
   const targetDir = `${TEMP_DIR}/${repoName}-${ts}`
   await runCommand(`git clone ${gitURL} ${targetDir}`)

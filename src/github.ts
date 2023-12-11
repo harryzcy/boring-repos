@@ -55,6 +55,7 @@ export const fastForwardRepository = async (
   token: string,
   appUserID: number,
 ) => {
+  console.log(`Fast-forwarding ${repo.full_name}`)
   try {
     const cloneURL = repo.clone_url.replace(
       'https://',
