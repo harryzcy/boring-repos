@@ -29,9 +29,14 @@ export function getClientSecret(): string {
 }
 
 export async function getPrivateKey(): Promise<string> {
-  if (!process.env.PRIVATE_KEY_FILE) {
-    throw new Error('PRIVATE_KEY_FILE is not set')
+  if (process.env.PRIVATE_KEY) {
+    return process.env.PRIVATE_KEY
   }
-  const buffer = await fs.promises.readFile(process.env.PRIVATE_KEY_FILE)
-  return buffer.toString()
+
+  if (process.env.PRIVATE_KEY_FILE) {
+    const buffer = await fs.promises.readFile(process.env.PRIVATE_KEY_FILE)
+    return buffer.toString()
+  }
+
+  throw new Error('either PRIVATE_KEY or PRIVATE_KEY_FILE must be set')
 }
