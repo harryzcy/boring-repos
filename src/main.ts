@@ -13,25 +13,39 @@ import {
   getRepository,
 } from './github.js'
 
-const appId = getAppID()
-const privateKey = await getPrivateKey()
-const clientId = getClientID()
-const clientSecret = getClientSecret()
+const run = async () => {
+  const appId = getAppID()
+  const privateKey = await getPrivateKey()
+  const clientId = getClientID()
+  const clientSecret = getClientSecret()
 
-const app = new App({
-  appId,
-  privateKey,
-  oauth: { clientId, clientSecret },
-})
+  const app = new App({
+    appId,
+    privateKey,
+    oauth: { clientId, clientSecret },
+  })
 
-const resp = await app.octokit.rest.apps.getAuthenticated()
-if (resp.status !== 200) throw new Error('Failed to authenticate app')
-const { octokit, installationId } = await getInstallationOctokit(app)
+  const resp = await app.octokit.rest.apps.getAuthenticated()
+  if (resp.status !== 200) throw new Error('Failed to authenticate app')
+  const { octokit, installationId } = await getInstallationOctokit(app)
 
-const appUserID = await getAppUserID(octokit)
-const token = await getAccessToken(octokit, installationId)
+  const appUserID = await getAppUserID(octokit)
+  const token = await getAccessToken(octokit, installationId)
 
-const repos = await getForkedRepos(octokit)
-const repo = await getRepository(octokit, repos[0].owner.login, repos[0].name)
+  const repos = await getForkedRepos(octokit)
 
-await fastForwardRepository(octokit, repo, token, appUserID)
+  for (const repo of repos) {
+    try {
+      const repoDetail = await getRepository(
+        octokit,
+        repo.owner.login,
+        repo.name,
+      )
+      await fastForwardRepository(octokit, repoDetail, token, appUserID)
+    } catch (e) {
+      console.error(`Failed to fast-forward ${repo.full_name}`)
+    }
+  }
+}
+
+await run()
