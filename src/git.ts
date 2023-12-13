@@ -43,6 +43,13 @@ export const fetchUpstream = async (repoDir: string) => {
   await runCommand(`git -C ${repoDir} fetch upstream`)
 }
 
+export const checkIfBranchExists = async (repoDir: string, branch: string) => {
+  const output = await runCommand(
+    `git -C ${repoDir} show-ref refs/heads/${branch}`,
+  )
+  return output !== ''
+}
+
 export const getDefaultBranch = async (repoDir: string) => {
   const branch = await runCommand(
     `git -C ${repoDir} rev-parse --abbrev-ref HEAD`,

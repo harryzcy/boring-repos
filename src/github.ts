@@ -2,6 +2,7 @@ import { Endpoints } from '@octokit/types'
 import { Octokit } from 'octokit'
 import {
   addUpstream,
+  checkIfBranchExists,
   cloneRepository,
   deleteDirectory,
   fastForwardMerge,
@@ -67,8 +68,13 @@ export const fastForwardRepository = async (
     if (!repo.parent) throw new Error('No parent repo')
     await addUpstream(repoDir, repo.parent.clone_url)
     await fetchUpstream(repoDir)
-    const branch = await getDefaultBranch(repoDir)
-    if (branch !== 'main' && branch !== 'master') {
+    let branch
+    if (await checkIfBranchExists(repoDir, 'main')) {
+      branch = 'main'
+    } else if (await checkIfBranchExists(repoDir, 'master')) {
+      branch = 'master'
+    } else {
+      branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
 
