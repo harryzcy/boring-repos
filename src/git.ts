@@ -6,12 +6,18 @@ const APP_NAME = 'boring-repos[bot]'
 
 const runCommand = async (cmd: string): Promise<string> => {
   return new Promise(function (resolve, reject) {
-    exec(cmd, function (err, stdout, stderr) {
-      if (err) return reject(err)
-      if (stdout !== '') console.log(stdout)
-      if (stderr !== '') console.error(stderr)
-      resolve(stdout || stderr)
-    })
+    exec(
+      cmd,
+      {
+        maxBuffer: 1024 * 1024, // 1MB
+      },
+      function (err, stdout, stderr) {
+        if (err) return reject(err)
+        if (stdout !== '') console.log(stdout)
+        if (stderr !== '') console.error(stderr)
+        resolve(stdout || stderr)
+      },
+    )
   })
 }
 
