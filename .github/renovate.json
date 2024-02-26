@@ -9,7 +9,11 @@
     "dependencies"
   ],
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": true,
+    "labels": [
+      "dependencies",
+      "skip-changelog"
+    ]
   },
   "postUpdateOptions": [
     "npmDedupe"
