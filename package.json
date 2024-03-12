@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@octokit/types": "12.6.0",
-    "@octokit/webhooks-types": "7.3.2",
+    "@octokit/webhooks-types": "7.4.0",
     "@tsconfig/node-lts": "20.1.1",
     "@types/node": "20.11.26",
     "@types/node-cron": "3.0.11",
