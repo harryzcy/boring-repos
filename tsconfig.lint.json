@@ -4,6 +4,5 @@
     "sourceMap": false,
     "removeComments": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["__tests__", "*.config.ts"]
+  "include": ["src/**/*", "*.config.ts"]
 }
