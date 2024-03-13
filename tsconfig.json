@@ -4,5 +4,5 @@
     "outDir": "bin"
   },
   "include": ["src", "__tests__"],
-  "exclude": ["node_modules", "vitest.config.ts"]
+  "exclude": ["node_modules", "*.config.ts"]
 }
