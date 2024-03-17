@@ -51,7 +51,6 @@ export const getRepository = async (
 }
 
 export const fastForwardRepository = async (
-  octokit: Octokit,
   repo: GetRepositoryResponse,
   token: string,
   appUserID: number,
