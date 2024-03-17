@@ -68,12 +68,15 @@ export const fastForwardRepository = async (
     if (!repo.parent) throw new Error('No parent repo')
     await addUpstream(repoDir, repo.parent.clone_url)
     await fetchUpstream(repoDir)
-    let branch
-    if (await checkIfBranchExists(repoDir, 'main')) {
-      branch = 'main'
-    } else if (await checkIfBranchExists(repoDir, 'master')) {
-      branch = 'master'
-    } else {
+
+    const allowedBranches = ['main', 'master', 'dev']
+    let branch: string | null = null
+    for (branch of allowedBranches) {
+      if (await checkIfBranchExists(repoDir, branch)) {
+        break
+      }
+    }
+    if (!branch) {
       branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
