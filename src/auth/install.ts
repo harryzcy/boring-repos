@@ -1,5 +1,29 @@
 import { App, Octokit } from 'octokit'
-import { getUsername } from './info.js'
+import {
+  getAppID,
+  getClientID,
+  getClientSecret,
+  getPrivateKey,
+  getUsername,
+} from './info.js'
+
+export const getAuthenticatedApp = async () => {
+  const appId = getAppID()
+  const privateKey = await getPrivateKey()
+  const clientId = getClientID()
+  const clientSecret = getClientSecret()
+
+  const app = new App({
+    appId,
+    privateKey,
+    oauth: { clientId, clientSecret },
+  })
+
+  const resp = await app.octokit.rest.apps.getAuthenticated()
+  if (resp.status !== 200) throw new Error('Failed to authenticate app')
+
+  return app
+}
 
 export const getInstallationOctokit = async (app: App) => {
   const username = getUsername()
