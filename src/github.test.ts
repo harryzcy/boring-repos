@@ -1,7 +1,14 @@
 import { assert } from 'console'
 import { test } from 'vitest'
 import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
-import { getForkedRepos } from './github.js'
+import { getAppUserID, getForkedRepos } from './github.js'
+
+test('Get app user ID', async () => {
+  const app = await getAuthenticatedApp()
+  const { octokit } = await getInstallationOctokit(app)
+  const id = await getAppUserID(octokit)
+  assert(id > 0)
+})
 
 test('Get forked repos', async () => {
   const app = await getAuthenticatedApp()
@@ -14,4 +21,16 @@ test('Get forked repos', async () => {
   for (const name of expected) {
     assert(actual.includes(name))
   }
+})
+
+test('Get a repository', async () => {
+  const app = await getAuthenticatedApp()
+  const { octokit } = await getInstallationOctokit(app)
+  const repo = await octokit.request('GET /repos/{owner}/{repo}', {
+    owner: 'harryzcy',
+    repo: 'boring-repos',
+  })
+  assert(repo.status === 200)
+  assert(repo.data.full_name === 'harryzcy/boring-repos')
+  assert(repo.data.fork === false)
 })
