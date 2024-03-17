@@ -9,6 +9,7 @@ import {
   fetchUpstream,
   getDefaultBranch,
   pushChanges,
+  pushTags,
   updateCommitter,
 } from './git.js'
 
@@ -79,6 +80,7 @@ export const fastForwardRepository = async (
 
     await fastForwardMerge(repoDir, branch)
     await pushChanges(repoDir, branch)
+    await pushTags(repoDir)
     await deleteDirectory(repoDir)
   } catch (e) {
     console.error(`Failed to fast-forward ${repo.full_name}`, e)

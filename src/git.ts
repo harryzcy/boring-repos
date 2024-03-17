@@ -69,6 +69,10 @@ export const pushChanges = async (repoDir: string, branch: string) => {
   await runCommand(`git -C ${repoDir} push origin ${branch}`)
 }
 
+export const pushTags = async (repoDir: string) => {
+  await runCommand(`git -C ${repoDir} push --tags`)
+}
+
 export const deleteDirectory = async (repoDir: string) => {
   await fs.promises.rm(repoDir, { recursive: true })
 }
