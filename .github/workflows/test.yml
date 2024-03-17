@@ -32,7 +32,13 @@ jobs:
 
       - run: npm install
       - run: npm run lint
-      - run: npm test
       - run: npm run build
         env:
           CI: true
+      - run: npm test
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          GITHUB_USERNAME: harryzcy
