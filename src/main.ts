@@ -21,7 +21,7 @@ const run = async () => {
 
   for (const repo of repos) {
     const repoDetail = await getRepository(octokit, repo.owner.login, repo.name)
-    await fastForwardRepository(octokit, repoDetail, token, appUserID)
+    await fastForwardRepository(repoDetail, token, appUserID)
   }
 }
 
