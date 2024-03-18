@@ -15,7 +15,7 @@
         "^src/dependencies.ts$"
       ],
       "matchStrings": [
-        "export const NODE_VERSION='(?<currentValue>.*?)'\\n"
+        "export const NODE_VERSION = '(?<currentValue>.*?)'\\n"
       ],
       "depNameTemplate": "nodejs/node",
       "datasourceTemplate": "github-tags",
