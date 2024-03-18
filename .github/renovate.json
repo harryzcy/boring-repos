@@ -8,6 +8,20 @@
   "labels": [
     "dependencies"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^src/dependencies.ts$"
+      ],
+      "matchStrings": [
+        "export const NODE_VERSION='(?<currentValue>.*?)'\\n"
+      ],
+      "depNameTemplate": "nodejs/node",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "node"
+    }
+  ],
   "lockFileMaintenance": {
     "enabled": true,
     "labels": [
