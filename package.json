@@ -18,7 +18,7 @@
   "dependencies": {
     "@octokit/core": "5.1.0",
     "@octokit/request-error": "5.0.1",
-    "cloudflare": "3.0.0-beta.10",
+    "cloudflare": "3.0.0-beta.11",
     "octokit": "3.1.2"
   },
   "devDependencies": {
