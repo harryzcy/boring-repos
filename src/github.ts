@@ -28,6 +28,7 @@ export const getAppUserID = async (octokit: Octokit): Promise<number> => {
   return response.data.id
 }
 
+// getForkedRepos returns all active forked repositories
 export const getForkedRepos = async (
   octokit: Octokit,
 ): Promise<GetForkedRepositoriesResponse> => {
@@ -35,7 +36,7 @@ export const getForkedRepos = async (
     per_page: 100,
   })
   return response.data.repositories.filter((repo) => {
-    return repo.fork && !IGNORE_REPOS.includes(repo.full_name)
+    return repo.fork && !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   })
 }
 
