@@ -1,0 +1,22 @@
+name = "r2-registry"
+
+workers_dev = true
+main = "./index.ts"
+compatibility_date = "2022-04-18"
+compatibility_flags = ["streams_enable_constructors"]
+
+## Production
+[env.production]
+r2_buckets = [{ binding = "REGISTRY", bucket_name = "r2-registry" }]
+
+[env.production.vars]
+#JWT_REGISTRY_TOKENS_PUBLIC_KEY=""
+REGISTRIES_JSON = "[{ \"registry\": \"https://registry.zcy.dev\", \"password_env\": \"UPSTREAM_REGISTRY_PASSWORD\", \"username\": \"harryzcy\" },{ \"registry\": \"https://ghcr.io/harryzcy\", \"password_env\": \"GH_REGISTRY_PASSWORD\", \"username\": \"harryzcy\" }]"
+
+# Secrets:
+# JWT_STATE_SECRET
+# echo `node -e "console.log(crypto.randomUUID())"` | wrangler secret put JWT_STATE_SECRET
+
+# Optional Secrets
+# USERNAME/PASSWORD if you want username/password based auth
+# GH_REGISTRY_PASSWORD = ""

@@ -1,5 +1,8 @@
 import Cloudflare from 'cloudflare'
+import { Octokit } from 'octokit'
 import { NODE_VERSION } from './dependencies.js'
+import { cloneRepository, runCommand } from './git.js'
+import { getRepository } from './github.js'
 
 const cloudflare = new Cloudflare()
 
@@ -37,4 +40,25 @@ export const updateNodeVersion = async (accountID: string) => {
       },
     })
   }
+}
+
+export const deployServerlessRegistry = async (
+  octokit: Octokit,
+  accountID: string,
+  apiToken: string,
+) => {
+  const repo = await getRepository(octokit, 'harryzcy', 'serverless-registry')
+
+  const repoDir = await cloneRepository(repo.clone_url, repo.name)
+
+  await runCommand(`npm install`, {
+    workingDir: repoDir,
+  })
+  await runCommand(`npx wrangler deploy --env production`, {
+    workingDir: repoDir,
+    env: {
+      CLOUDFLARE_ACCOUNT_ID: accountID,
+      CLOUDFLARE_API_TOKEN: apiToken,
+    },
+  })
 }

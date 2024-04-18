@@ -4,18 +4,24 @@ import fs from 'fs'
 const TEMP_DIR = process.env.TEMP_DIR ?? '/tmp'
 const APP_NAME = 'boring-repos[bot]'
 
-const runCommand = async (
+export const runCommand = async (
   cmd: string,
-  hideError?: boolean,
+  options?: {
+    workingDir?: string
+    env?: NodeJS.ProcessEnv
+    hideError?: boolean
+  },
 ): Promise<string> => {
   return new Promise(function (resolve, reject) {
     exec(
       cmd,
       {
+        cwd: options?.workingDir,
+        env: options?.env,
         maxBuffer: 1024 * 1024, // 1MB
       },
       function (err, stdout, stderr) {
-        if (err && !hideError) return reject(err)
+        if (err && !options?.hideError) return reject(err)
         if (stdout !== '') console.log(stdout)
         if (stderr !== '') console.error(stderr)
         resolve(stdout || stderr)
@@ -49,7 +55,9 @@ export const fetchUpstream = async (repoDir: string) => {
 export const checkIfBranchExists = async (repoDir: string, branch: string) => {
   const output = await runCommand(
     `git -C ${repoDir} show-ref refs/heads/${branch}`,
-    true,
+    {
+      hideError: true,
+    },
   )
   return output !== ''
 }
