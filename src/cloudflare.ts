@@ -1,4 +1,5 @@
 import Cloudflare from 'cloudflare'
+import fs from 'node:fs'
 import { Octokit } from 'octokit'
 import { NODE_VERSION } from './dependencies.js'
 import { cloneRepository, runCommand } from './git.js'
@@ -50,6 +51,12 @@ export const deployServerlessRegistry = async (
   const repo = await getRepository(octokit, 'harryzcy', 'serverless-registry')
 
   const repoDir = await cloneRepository(repo.clone_url, repo.name)
+
+  const wranglerConfig = await fs.promises.readFile(
+    `config/serverless-registry.toml.toml`,
+    'utf8',
+  )
+  await fs.promises.writeFile(`${repoDir}/wrangler.toml`, wranglerConfig)
 
   await runCommand(`npm install`, {
     workingDir: repoDir,
