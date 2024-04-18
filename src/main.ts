@@ -32,7 +32,11 @@ const runCloudflare = async (octokit: Octokit) => {
   const accountID = await getCloudflareAccountID()
   await updateNodeVersion(accountID)
 
-  await deployServerlessRegistry(octokit, accountID, apiToken)
+  await deployServerlessRegistry(
+    octokit,
+    accountID,
+    process.env.CLOUDFLARE_API_TOKEN!,
+  )
 }
 
 const run = async () => {
