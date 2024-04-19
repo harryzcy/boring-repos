@@ -62,16 +62,10 @@ export const deployServerlessRegistry = async (
     workingDir: repoDir,
   })
 
-  await runCommand(`env`, {
-    env: {
-      CLOUDFLARE_ACCOUNT_ID: accountID,
-      CLOUDFLARE_API_TOKEN: apiToken,
-    },
-  })
-
   await runCommand(`npx wrangler deploy --env production`, {
     workingDir: repoDir,
     env: {
+      ...process.env,
       CLOUDFLARE_ACCOUNT_ID: accountID,
       CLOUDFLARE_API_TOKEN: apiToken,
     },
