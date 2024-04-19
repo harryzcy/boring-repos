@@ -53,7 +53,7 @@ export const deployServerlessRegistry = async (
   const repoDir = await cloneRepository(repo.clone_url, repo.name)
 
   const wranglerConfig = await fs.promises.readFile(
-    `config/serverless-registry.toml.toml`,
+    `config/serverless-registry.toml`,
     'utf8',
   )
   await fs.promises.writeFile(`${repoDir}/wrangler.toml`, wranglerConfig)
