@@ -1,12 +1,6 @@
 {
   "extends": [
-    "config:best-practices",
-    ":pinDependencies",
-    ":disableDependencyDashboard",
-    ":automergeMinor"
-  ],
-  "labels": [
-    "dependencies"
+    "github>harryzcy/renovate-config"
   ],
   "customManagers": [
     {
@@ -21,15 +15,5 @@
       "datasourceTemplate": "github-tags",
       "versioningTemplate": "node"
     }
-  ],
-  "lockFileMaintenance": {
-    "enabled": true,
-    "labels": [
-      "dependencies",
-      "skip-changelog"
-    ]
-  },
-  "postUpdateOptions": [
-    "npmDedupe"
   ]
 }
