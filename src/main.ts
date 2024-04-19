@@ -7,6 +7,7 @@ import {
 import {
   deployServerlessRegistry,
   getCloudflareAccountID,
+  updateNodeVersion,
 } from './cloudflare.js'
 import {
   fastForwardRepository,
@@ -29,14 +30,13 @@ const runGitHub = async (octokit: Octokit, installationId: number) => {
 
 const runCloudflare = async (octokit: Octokit) => {
   const accountID = await getCloudflareAccountID()
-  // await updateNodeVersion(accountID)
+  await updateNodeVersion(accountID)
 
   await deployServerlessRegistry(
     octokit,
     accountID,
     process.env.CLOUDFLARE_API_TOKEN!,
   )
-  process.exit(0)
 }
 
 const run = async () => {
