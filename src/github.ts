@@ -35,9 +35,13 @@ export const getForkedRepos = async (
   const response = await octokit.request('GET /installation/repositories', {
     per_page: 100,
   })
-  return response.data.repositories.filter((repo) => {
+  const repos = response.data.repositories.filter((repo) => {
     return repo.fork && !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   })
+  console.log(
+    `Found ${repos.length} forked repos: ${repos.map((r) => r.full_name).join(', ')}`,
+  )
+  return repos
 }
 
 export const getRepository = async (
