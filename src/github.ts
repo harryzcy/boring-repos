@@ -32,10 +32,10 @@ export const getAppUserID = async (octokit: Octokit): Promise<number> => {
 export const getForkedRepos = async (
   octokit: Octokit,
 ): Promise<GetForkedRepositoriesResponse> => {
-  const response = await octokit.request('GET /installation/repositories', {
+  const response = await octokit.paginate('GET /installation/repositories', {
     per_page: 100,
   })
-  const repos = response.data.repositories.filter((repo) => {
+  const repos = response.filter((repo) => {
     return repo.fork && !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   })
   console.log(
