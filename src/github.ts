@@ -74,7 +74,7 @@ export const fastForwardRepository = async (
     await addUpstream(repoDir, repo.parent.clone_url)
     await fetchUpstream(repoDir)
 
-    const allowedBranches = ['main', 'master', 'dev']
+    const allowedBranches = ['main', 'master', 'dev', 'v2']
     let branch: string | null = null
     for (branch of allowedBranches) {
       if (await checkIfBranchExists(repoDir, branch)) {
