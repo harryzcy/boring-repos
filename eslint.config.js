@@ -1,6 +1,7 @@
 // @ts-check
 
 import eslint from '@eslint/js'
+import tsPlugin from '@typescript-eslint/eslint-plugin'
 import parser from '@typescript-eslint/parser'
 import globals from 'globals'
 import path from 'path'
@@ -29,6 +30,9 @@ export default tseslint.config(
         ...globals.node,
         ...globals.es2015,
       },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
     },
     rules: {
       semi: [2, 'never'],
