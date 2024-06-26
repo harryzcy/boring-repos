@@ -1,19 +1,26 @@
-import eslintParser from '@typescript-eslint/parser'
-import recommendedTypeChecked from '@typescript-eslint/recommended-type-checked'
-import stylisticTypeChecked from '@typescript-eslint/stylistic-type-checked'
-import recommended from 'eslint:recommended'
-import globals from 'globals'
-import prettier from 'prettier'
+// @ts-check
 
-export default [
+import eslint from '@eslint/js'
+import globals from 'globals'
+import path from 'path'
+import tseslint from 'typescript-eslint'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
   {
-    files: ['**/*.js', '**/*.mjs'],
+    files: ['**/*.ts'],
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
-      parser: eslintParser,
       parserOptions: {
         project: './tsconfig.lint.json',
+        tsconfigRootDir: __dirname,
       },
       globals: {
         ...globals.browser,
@@ -21,20 +28,8 @@ export default [
         ...globals.es2015,
       },
     },
-    extends: [
-      'eslint:recommended',
-      'plugin:@typescript-eslint/recommended-type-checked',
-      'plugin:@typescript-eslint/stylistic-type-checked',
-      'prettier',
-    ],
-    plugins: {
-      recommended,
-      recommendedTypeChecked,
-      stylisticTypeChecked,
-      prettier,
-    },
     rules: {
       semi: [2, 'never'],
     },
   },
-]
+)
