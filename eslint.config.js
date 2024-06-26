@@ -2,7 +2,12 @@
 
 import eslint from '@eslint/js'
 import globals from 'globals'
+import path from 'path'
 import tseslint from 'typescript-eslint'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -13,10 +18,9 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
-      parser: tseslint.parser,
       parserOptions: {
         project: './tsconfig.lint.json',
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
       },
       globals: {
         ...globals.browser,
