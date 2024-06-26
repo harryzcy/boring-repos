@@ -1,6 +1,7 @@
 // @ts-check
 
 import eslint from '@eslint/js'
+import parser from '@typescript-eslint/parser'
 import globals from 'globals'
 import path from 'path'
 import tseslint from 'typescript-eslint'
@@ -18,7 +19,7 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
-      parser: tseslint.parser,
+      parser: parser,
       parserOptions: {
         project: './tsconfig.lint.json',
         tsconfigRootDir: __dirname,
