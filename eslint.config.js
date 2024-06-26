@@ -11,12 +11,17 @@ export default tseslint.config(
   ...tseslint.configs.stylisticTypeChecked,
   {
     files: ['**/*.ts'],
+    ignores: ['node_modules', 'dist', '**/*.js'],
     languageOptions: {
-      // ecmaVersion: 2020,
-      // sourceType: 'module',
-      // parser: tseslint.parser,
+      ecmaVersion: 2020,
+      sourceType: 'module',
+      parser: tseslint.parser,
       parserOptions: {
         project: './tsconfig.lint.json',
+        // projectService: {
+        //   allowDefaultProject: ['./*.js'],
+        //   defaultProject: './tsconfig.json',
+        // },
         tsconfigRootDir: import.meta.dirname,
       },
       globals: {
