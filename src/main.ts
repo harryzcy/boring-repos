@@ -2,18 +2,18 @@ import { Octokit } from 'octokit'
 import {
   getAccessToken,
   getAuthenticatedApp,
-  getInstallationOctokit,
+  getInstallationOctokit
 } from './auth/install.js'
 import {
   deployServerlessRegistry,
   getCloudflareAccountID,
-  updateNodeVersion,
+  updateNodeVersion
 } from './cloudflare.js'
 import {
   fastForwardRepository,
   getAppUserID,
   getForkedRepos,
-  getRepository,
+  getRepository
 } from './github.js'
 
 const runGitHub = async (octokit: Octokit, installationId: number) => {
@@ -35,7 +35,7 @@ const runCloudflare = async (octokit: Octokit) => {
   await deployServerlessRegistry(
     octokit,
     accountID,
-    process.env.CLOUDFLARE_API_TOKEN!,
+    process.env.CLOUDFLARE_API_TOKEN!
   )
 }
 

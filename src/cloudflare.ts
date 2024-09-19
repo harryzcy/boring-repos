@@ -26,19 +26,19 @@ export const updateNodeVersion = async (accountID: string) => {
           production: {
             env_vars: {
               NODE_VERSION: {
-                value: NODE_VERSION,
-              },
-            },
+                value: NODE_VERSION
+              }
+            }
           },
           preview: {
             env_vars: {
               NODE_VERSION: {
-                value: NODE_VERSION,
-              },
-            },
-          },
-        },
-      },
+                value: NODE_VERSION
+              }
+            }
+          }
+        }
+      }
     })
   }
 }
@@ -46,7 +46,7 @@ export const updateNodeVersion = async (accountID: string) => {
 export const deployServerlessRegistry = async (
   octokit: Octokit,
   accountID: string,
-  apiToken: string,
+  apiToken: string
 ) => {
   const repo = await getRepository(octokit, 'harryzcy', 'serverless-registry')
 
@@ -54,12 +54,12 @@ export const deployServerlessRegistry = async (
 
   const wranglerConfig = await fs.promises.readFile(
     `config/serverless-registry.toml`,
-    'utf8',
+    'utf8'
   )
   await fs.promises.writeFile(`${repoDir}/wrangler.toml`, wranglerConfig)
 
   await runCommand(`npm install`, {
-    workingDir: repoDir,
+    workingDir: repoDir
   })
 
   await runCommand(`npx wrangler deploy --env production`, {
@@ -67,7 +67,7 @@ export const deployServerlessRegistry = async (
     env: {
       ...process.env,
       CLOUDFLARE_ACCOUNT_ID: accountID,
-      CLOUDFLARE_API_TOKEN: apiToken,
-    },
+      CLOUDFLARE_API_TOKEN: apiToken
+    }
   })
 }

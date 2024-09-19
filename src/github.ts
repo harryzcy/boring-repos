@@ -10,7 +10,7 @@ import {
   getDefaultBranch,
   pushChanges,
   pushTags,
-  updateCommitter,
+  updateCommitter
 } from './git.js'
 
 export type GetForkedRepositoriesResponse =
@@ -23,23 +23,23 @@ const IGNORE_REPOS = process.env.IGNORE_REPOS?.split(',') ?? []
 
 export const getAppUserID = async (octokit: Octokit): Promise<number> => {
   const response = await octokit.request('GET /users/{username}', {
-    username: 'boring-repos[bot]',
+    username: 'boring-repos[bot]'
   })
   return response.data.id
 }
 
 // getForkedRepos returns all active forked repositories
 export const getForkedRepos = async (
-  octokit: Octokit,
+  octokit: Octokit
 ): Promise<GetForkedRepositoriesResponse> => {
   const response = await octokit.paginate('GET /installation/repositories', {
-    per_page: 100,
+    per_page: 100
   })
   const repos = response.filter((repo) => {
     return repo.fork && !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   })
   console.log(
-    `Found ${repos.length} forked repos: ${repos.map((r) => r.full_name).join(', ')}`,
+    `Found ${repos.length} forked repos: ${repos.map((r) => r.full_name).join(', ')}`
   )
   return repos
 }
@@ -47,11 +47,11 @@ export const getForkedRepos = async (
 export const getRepository = async (
   octokit: Octokit,
   owner: string,
-  repo: string,
+  repo: string
 ): Promise<GetRepositoryResponse> => {
   const response = await octokit.request('GET /repos/{owner}/{repo}', {
     owner,
-    repo,
+    repo
   })
   return response.data
 }
@@ -59,13 +59,13 @@ export const getRepository = async (
 export const fastForwardRepository = async (
   repo: GetRepositoryResponse,
   token: string,
-  appUserID: number,
+  appUserID: number
 ) => {
   console.log(`Fast-forwarding ${repo.full_name}`)
   try {
     const cloneURL = repo.clone_url.replace(
       'https://',
-      `https://x-oauth-basic:${token}@`,
+      `https://x-oauth-basic:${token}@`
     )
     const repoDir = await cloneRepository(cloneURL, repo.name)
     await updateCommitter(repoDir, appUserID)
