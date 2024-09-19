@@ -29,7 +29,7 @@ test('Get a repository', async () => {
   const { octokit } = await getInstallationOctokit(app)
   const repo = await octokit.request('GET /repos/{owner}/{repo}', {
     owner: 'harryzcy',
-    repo: 'boring-repos',
+    repo: 'boring-repos'
   })
   assert(repo.status === 200)
   assert(repo.data.full_name === 'harryzcy/boring-repos')
