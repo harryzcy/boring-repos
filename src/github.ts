@@ -39,7 +39,7 @@ export const getForkedRepos = async (
     return repo.fork && !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   })
   console.log(
-    `Found ${repos.length} forked repos: ${repos.map((r) => r.full_name).join(', ')}`
+    `Found ${repos.length.toString()} forked repos: ${repos.map((r) => r.full_name).join(', ')}`
   )
   return repos
 }

@@ -1,4 +1,4 @@
-import { assert, test } from 'vitest'
+import { assert, expect, test } from 'vitest'
 import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
 import { getAppUserID, getForkedRepos } from './github.js'
 
@@ -31,7 +31,7 @@ test('Get a repository', async () => {
     owner: 'harryzcy',
     repo: 'boring-repos'
   })
-  assert(repo.status === 200)
+  expect(repo.status).toBe(200)
   assert(repo.data.full_name === 'harryzcy/boring-repos')
-  assert(repo.data.fork === false)
+  assert(!repo.data.fork)
 })

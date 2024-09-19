@@ -20,6 +20,7 @@ export const getAuthenticatedApp = async () => {
   })
 
   const resp = await app.octokit.rest.apps.getAuthenticated()
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (resp.status !== 200) throw new Error('Failed to authenticate app')
 
   return app
