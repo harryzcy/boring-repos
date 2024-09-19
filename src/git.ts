@@ -21,7 +21,10 @@ export const runCommand = async (
         maxBuffer: 1024 * 1024 // 1MB
       },
       function (err, stdout, stderr) {
-        if (err && !options?.hideError) return reject(err)
+        if (err && !options?.hideError) {
+          reject(err)
+          return
+        }
         if (stdout !== '') console.log(stdout)
         if (stderr !== '') console.error(stderr)
         resolve(stdout || stderr)
@@ -32,7 +35,7 @@ export const runCommand = async (
 
 export const cloneRepository = async (gitURL: string, repoName: string) => {
   const ts = Math.floor(Date.now() / 1000)
-  const targetDir = `${TEMP_DIR}/${repoName}-${ts}`
+  const targetDir = `${TEMP_DIR}/${repoName}-${ts.toString()}`
   await runCommand(`git clone ${gitURL} ${targetDir}`)
   return targetDir
 }
@@ -40,7 +43,7 @@ export const cloneRepository = async (gitURL: string, repoName: string) => {
 export const updateCommitter = async (repoDir: string, appUserID: number) => {
   await runCommand(`git -C ${repoDir} config user.name ${APP_NAME}`)
   await runCommand(
-    `git -C ${repoDir} config user.email "${appUserID}+${APP_NAME}@users.noreply.github.com"`
+    `git -C ${repoDir} config user.email "${appUserID.toString()}+${APP_NAME}@users.noreply.github.com"`
   )
 }
 

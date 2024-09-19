@@ -35,7 +35,7 @@ const runCloudflare = async (octokit: Octokit) => {
   await deployServerlessRegistry(
     octokit,
     accountID,
-    process.env.CLOUDFLARE_API_TOKEN!
+    process.env.CLOUDFLARE_API_TOKEN ?? ''
   )
 }
 
