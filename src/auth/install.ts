@@ -4,7 +4,7 @@ import {
   getClientID,
   getClientSecret,
   getPrivateKey,
-  getUsername,
+  getUsername
 } from './info.js'
 
 export const getAuthenticatedApp = async () => {
@@ -16,7 +16,7 @@ export const getAuthenticatedApp = async () => {
   const app = new App({
     appId,
     privateKey,
-    oauth: { clientId, clientSecret },
+    oauth: { clientId, clientSecret }
   })
 
   const resp = await app.octokit.rest.apps.getAuthenticated()
@@ -30,24 +30,24 @@ export const getInstallationOctokit = async (app: App) => {
   const { data } = await app.octokit.request(
     'GET /users/{username}/installation',
     {
-      username: username,
-    },
+      username: username
+    }
   )
   return {
     octokit: await app.getInstallationOctokit(data.id),
-    installationId: data.id,
+    installationId: data.id
   }
 }
 
 export const getAccessToken = async (
   octokit: Octokit,
-  installationId: number,
+  installationId: number
 ) => {
   const { data } = await octokit.request(
     'POST /app/installations/{installation_id}/access_tokens',
     {
-      installation_id: installationId,
-    },
+      installation_id: installationId
+    }
   )
   return data.token
 }

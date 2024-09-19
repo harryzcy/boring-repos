@@ -10,10 +10,10 @@
     "build": "tsc -p tsconfig.json",
     "build:watch": "npm run prebuild && tsc -w -p tsconfig.json",
     "build:release": "npm run clean && tsc -p tsconfig.release.json",
-    "lint": "eslint . --ext .ts --ext .mts",
+    "lint": "eslint .",
     "test": "vitest --run --coverage",
     "test:watch": "vitest",
-    "prettier": "prettier --config .prettierrc --write 'src/**/*.{ts,js}'"
+    "prettier": "prettier --write 'src/**/*.{ts,js}'"
   },
   "dependencies": {
     "@octokit/core": "6.1.2",

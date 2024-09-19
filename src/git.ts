@@ -10,7 +10,7 @@ export const runCommand = async (
     workingDir?: string
     env?: NodeJS.ProcessEnv
     hideError?: boolean
-  },
+  }
 ): Promise<string> => {
   return new Promise(function (resolve, reject) {
     exec(
@@ -18,14 +18,14 @@ export const runCommand = async (
       {
         cwd: options?.workingDir,
         env: options?.env,
-        maxBuffer: 1024 * 1024, // 1MB
+        maxBuffer: 1024 * 1024 // 1MB
       },
       function (err, stdout, stderr) {
         if (err && !options?.hideError) return reject(err)
         if (stdout !== '') console.log(stdout)
         if (stderr !== '') console.error(stderr)
         resolve(stdout || stderr)
-      },
+      }
     )
   })
 }
@@ -40,7 +40,7 @@ export const cloneRepository = async (gitURL: string, repoName: string) => {
 export const updateCommitter = async (repoDir: string, appUserID: number) => {
   await runCommand(`git -C ${repoDir} config user.name ${APP_NAME}`)
   await runCommand(
-    `git -C ${repoDir} config user.email "${appUserID}+${APP_NAME}@users.noreply.github.com"`,
+    `git -C ${repoDir} config user.email "${appUserID}+${APP_NAME}@users.noreply.github.com"`
   )
 }
 
@@ -56,15 +56,15 @@ export const checkIfBranchExists = async (repoDir: string, branch: string) => {
   const output = await runCommand(
     `git -C ${repoDir} show-ref refs/heads/${branch}`,
     {
-      hideError: true,
-    },
+      hideError: true
+    }
   )
   return output !== ''
 }
 
 export const getDefaultBranch = async (repoDir: string) => {
   const branch = await runCommand(
-    `git -C ${repoDir} rev-parse --abbrev-ref HEAD`,
+    `git -C ${repoDir} rev-parse --abbrev-ref HEAD`
   )
   return branch.trim()
 }
