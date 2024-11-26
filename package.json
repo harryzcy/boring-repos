@@ -24,7 +24,7 @@
   "devDependencies": {
     "@octokit/types": "13.6.2",
     "@octokit/webhooks-types": "7.6.1",
-    "@tsconfig/node-lts": "22.0.0",
+    "@tsconfig/node-lts": "22.0.1",
     "@types/eslint__js": "8.42.3",
     "@types/node": "22.10.0",
     "@types/node-cron": "3.0.11",
