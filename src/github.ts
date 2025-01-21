@@ -18,7 +18,7 @@ export const REPO_LABELS = [
   {
     name: 'bug',
     color: 'd73a4a',
-    description: 'Something isn\'t working'
+    description: "Something isn't working"
   },
   {
     name: 'chore',
@@ -177,13 +177,18 @@ export const updateRepositoryLabels = async (
       created += 1
     } else {
       const currentLabel = labelNames[label.name]
-      if (currentLabel.color !== label.color || currentLabel.description !== label.description) {
+      if (
+        currentLabel.color !== label.color ||
+        currentLabel.description !== label.description
+      ) {
         await updateRepositoryLabel(octokit, owner, repo, label)
         updated += 1
       }
     }
   }
-  console.log(`Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`)
+  console.log(
+    `Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`
+  )
 }
 
 export interface UpdateRepositoryLabelParams {
