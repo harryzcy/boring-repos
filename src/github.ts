@@ -124,7 +124,7 @@ export const getRepositoryLabels = async (
   }))
 }
 
-export interface UpdateRepositoryLabelParams  {
+export interface UpdateRepositoryLabelParams {
   name: string
   newName?: string
   color: string
