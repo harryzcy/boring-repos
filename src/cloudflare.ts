@@ -21,20 +21,18 @@ export const updateNodeVersion = async (accountID: string) => {
   for (const project of projects) {
     await cloudflare.pages.projects.edit(project, {
       account_id: accountID,
-      body: {
-        deployment_configs: {
-          production: {
-            env_vars: {
-              NODE_VERSION: {
-                value: NODE_VERSION
-              }
+      deployment_configs: {
+        production: {
+          env_vars: {
+            NODE_VERSION: {
+              value: NODE_VERSION
             }
-          },
-          preview: {
-            env_vars: {
-              NODE_VERSION: {
-                value: NODE_VERSION
-              }
+          }
+        },
+        preview: {
+          env_vars: {
+            NODE_VERSION: {
+              value: NODE_VERSION
             }
           }
         }
