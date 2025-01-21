@@ -14,6 +14,38 @@ import {
 } from './git.js'
 
 const IGNORE_REPOS = process.env.IGNORE_REPOS?.split(',') ?? []
+export const REPO_LABELS = [
+  {
+    name: 'bug',
+    color: 'd73a4a',
+    description: 'Something isn\'t working'
+  },
+  {
+    name: 'chore',
+    color: '44b274',
+    description: 'Maintenance'
+  },
+  {
+    name: 'dependencies',
+    color: 'ededed',
+    description: 'Dependencies'
+  },
+  {
+    name: 'enhancement',
+    color: 'a2eeef',
+    description: 'New feature or request'
+  },
+  {
+    name: 'skip-changelog',
+    color: 'bfdadc',
+    description: 'Do not include in changelog'
+  },
+  {
+    name: 'wontfix',
+    color: 'ffffff',
+    description: 'This will not be worked on'
+  }
+]
 
 export const getAppUserID = async (octokit: Octokit): Promise<number> => {
   const response = await octokit.request('GET /users/{username}', {
@@ -102,11 +134,13 @@ export const fastForwardRepository = async (
   }
 }
 
-export type GetRepositoryLabelsResponse = {
+interface RepositoryLabel {
   name: string
   color: string
   description: string | null
-}[]
+}
+
+export type GetRepositoryLabelsResponse = RepositoryLabel[]
 
 export const getRepositoryLabels = async (
   octokit: Octokit,
@@ -122,6 +156,29 @@ export const getRepositoryLabels = async (
     color: label.color,
     description: label.description
   }))
+}
+
+export const updateRepositoryLabels = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string
+) => {
+  const labels = await getRepositoryLabels(octokit, owner, repo)
+  const labelNames: Record<string, RepositoryLabel> = {}
+  for (const label of labels) {
+    labelNames[label.name] = label
+  }
+
+  for (const label of REPO_LABELS) {
+    if (!(label.name in labelNames)) {
+      await createRepositoryLabel(octokit, owner, repo, label)
+    } else {
+      const currentLabel = labelNames[label.name]
+      if (currentLabel.color !== label.color || currentLabel.description !== label.description) {
+        await updateRepositoryLabel(octokit, owner, repo, label)
+      }
+    }
+  }
 }
 
 export interface UpdateRepositoryLabelParams {
