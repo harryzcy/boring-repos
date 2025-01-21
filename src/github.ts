@@ -13,13 +13,39 @@ import {
   updateCommitter
 } from './git.js'
 
-export type GetForkedRepositoriesResponse =
-  Endpoints['GET /user/repos']['response']['data']
-
-type GetRepositoryResponse =
-  Endpoints['GET /repos/{owner}/{repo}']['response']['data']
-
 const IGNORE_REPOS = process.env.IGNORE_REPOS?.split(',') ?? []
+export const REPO_LABELS = [
+  {
+    name: 'bug',
+    color: 'd73a4a',
+    description: "Something isn't working"
+  },
+  {
+    name: 'chore',
+    color: '44b274',
+    description: 'Maintenance'
+  },
+  {
+    name: 'dependencies',
+    color: 'ededed',
+    description: 'Dependencies'
+  },
+  {
+    name: 'enhancement',
+    color: 'a2eeef',
+    description: 'New feature or request'
+  },
+  {
+    name: 'skip-changelog',
+    color: 'bfdadc',
+    description: 'Do not include in changelog'
+  },
+  {
+    name: 'wontfix',
+    color: 'ffffff',
+    description: 'This will not be worked on'
+  }
+]
 
 export const getAppUserID = async (octokit: Octokit): Promise<number> => {
   const response = await octokit.request('GET /users/{username}', {
@@ -28,21 +54,34 @@ export const getAppUserID = async (octokit: Octokit): Promise<number> => {
   return response.data.id
 }
 
-// getForkedRepos returns all active forked repositories
-export const getForkedRepos = async (
-  octokit: Octokit
-): Promise<GetForkedRepositoriesResponse> => {
+export interface GetRepositoriesParams {
+  isFork?: boolean
+}
+export type GetRepositoriesResponse =
+  Endpoints['GET /user/repos']['response']['data']
+
+// getRepositories returns all repositories, optionally filtering by fork status
+export const getRepositories = async (
+  octokit: Octokit,
+  { isFork }: GetRepositoriesParams
+): Promise<GetRepositoriesResponse> => {
   const response = await octokit.paginate('GET /installation/repositories', {
     per_page: 100
   })
-  const repos = response.filter((repo) => {
-    return repo.fork && !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
+  let repos = response.filter((repo) => {
+    return !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   })
+  if (isFork !== undefined) {
+    repos = repos.filter((repo) => repo.fork === isFork)
+  }
   console.log(
     `Found ${repos.length.toString()} forked repos: ${repos.map((r) => r.full_name).join(', ')}`
   )
   return repos
 }
+
+type GetRepositoryResponse =
+  Endpoints['GET /repos/{owner}/{repo}']['response']['data']
 
 export const getRepository = async (
   octokit: Octokit,
@@ -93,4 +132,105 @@ export const fastForwardRepository = async (
   } catch (e) {
     console.error(`Failed to fast-forward ${repo.full_name}`, e)
   }
+}
+
+interface RepositoryLabel {
+  name: string
+  color: string
+  description: string | null
+}
+
+export type GetRepositoryLabelsResponse = RepositoryLabel[]
+
+export const getRepositoryLabels = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string
+): Promise<GetRepositoryLabelsResponse> => {
+  const response = await octokit.request('GET /repos/{owner}/{repo}/labels', {
+    owner,
+    repo
+  })
+  return response.data.map((label) => ({
+    name: label.name,
+    color: label.color,
+    description: label.description
+  }))
+}
+
+export const updateRepositoryLabels = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string
+) => {
+  const labels = await getRepositoryLabels(octokit, owner, repo)
+  const labelNames: Record<string, RepositoryLabel> = {}
+  for (const label of labels) {
+    labelNames[label.name] = label
+  }
+
+  let created = 0
+  let updated = 0
+  for (const label of REPO_LABELS) {
+    if (!(label.name in labelNames)) {
+      await createRepositoryLabel(octokit, owner, repo, label)
+      created += 1
+    } else {
+      const currentLabel = labelNames[label.name]
+      if (
+        currentLabel.color !== label.color ||
+        currentLabel.description !== label.description
+      ) {
+        await updateRepositoryLabel(octokit, owner, repo, label)
+        updated += 1
+      }
+    }
+  }
+  console.log(
+    `Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`
+  )
+}
+
+export interface UpdateRepositoryLabelParams {
+  name: string
+  newName?: string
+  color: string
+  description?: string
+}
+
+export const updateRepositoryLabel = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  { name, newName, color, description }: UpdateRepositoryLabelParams
+) => {
+  await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
+    owner,
+    repo,
+    name,
+    new_name: newName,
+    description: description,
+    color: color
+  })
+}
+
+export interface CreateRepositoryLabelParams {
+  name: string
+  color: string
+  description?: string
+}
+
+export const createRepositoryLabel = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  { name, color, description }: CreateRepositoryLabelParams
+) => {
+  await octokit.request('POST /repos/{owner}/{repo}/labels', {
+    owner,
+    repo,
+    name,
+    description,
+    color
+  })
 }

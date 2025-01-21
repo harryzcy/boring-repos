@@ -12,19 +12,24 @@ import {
 import {
   fastForwardRepository,
   getAppUserID,
-  getForkedRepos,
-  getRepository
+  getRepositories,
+  getRepository,
+  updateRepositoryLabels
 } from './github.js'
 
 const runGitHub = async (octokit: Octokit, installationId: number) => {
   const appUserID = await getAppUserID(octokit)
   const token = await getAccessToken(octokit, installationId)
 
-  const repos = await getForkedRepos(octokit)
-
-  for (const repo of repos) {
+  const forkedRepos = await getRepositories(octokit, { isFork: true })
+  for (const repo of forkedRepos) {
     const repoDetail = await getRepository(octokit, repo.owner.login, repo.name)
     await fastForwardRepository(repoDetail, token, appUserID)
+  }
+
+  const originalRepos = await getRepositories(octokit, { isFork: false })
+  for (const repo of originalRepos) {
+    await updateRepositoryLabels(octokit, repo.owner.login, repo.name)
   }
 }
 
