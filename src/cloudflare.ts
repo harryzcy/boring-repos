@@ -7,7 +7,7 @@ import { getRepository } from './github.js'
 
 const cloudflare = new Cloudflare()
 
-export const getCloudflareAccountID =  () => {
+export const getCloudflareAccountID = () => {
   if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
     throw new Error('CLOUDFLARE_ACCOUNT_ID is not set')
   }
