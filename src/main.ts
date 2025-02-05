@@ -34,7 +34,7 @@ const runGitHub = async (octokit: Octokit, installationId: number) => {
 }
 
 const runCloudflare = async (octokit: Octokit) => {
-  const accountID = await getCloudflareAccountID()
+  const accountID = getCloudflareAccountID()
   await updateNodeVersion(accountID)
 
   await deployServerlessRegistry(
