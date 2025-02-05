@@ -7,13 +7,11 @@ import { getRepository } from './github.js'
 
 const cloudflare = new Cloudflare()
 
-export const getCloudflareAccountID = async () => {
-  const allAccounts = []
-  for await (const accountListResponse of cloudflare.accounts.list()) {
-    allAccounts.push(accountListResponse)
+export const getCloudflareAccountID = () => {
+  if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
+    throw new Error('CLOUDFLARE_ACCOUNT_ID is not set')
   }
-  const account = allAccounts[0] as { id: string }
-  return account.id
+  return process.env.CLOUDFLARE_ACCOUNT_ID
 }
 
 export const updateNodeVersion = async (accountID: string) => {
