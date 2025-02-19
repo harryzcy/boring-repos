@@ -1,4 +1,4 @@
-import { assert, expect, test , describe} from 'vitest'
+import { assert, expect, test, describe } from 'vitest'
 import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
 import {
   createRepositoryLabel,
@@ -22,8 +22,13 @@ describe.skipIf(isIntegration)('GitHub API', () => {
     const { octokit } = await getInstallationOctokit(app)
     const repos = await getRepositories(octokit, { isFork: true })
     assert(repos.length > 0)
-  
-    const expected = ['gitea', 'serverless-registry', 'homepage', 'MediaCrawler']
+
+    const expected = [
+      'gitea',
+      'serverless-registry',
+      'homepage',
+      'MediaCrawler'
+    ]
     const actual = repos.map((repo) => repo.name)
     console.log(actual)
     for (const name of expected) {
@@ -47,12 +52,15 @@ describe.skipIf(isIntegration)('GitHub API', () => {
   test('Get repository labels', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
-    const labels = await getRepositoryLabels(octokit, 'harryzcy', 'boring-repos')
+    const labels = await getRepositoryLabels(
+      octokit,
+      'harryzcy',
+      'boring-repos'
+    )
     assert(labels.length > 0)
     assert(labels.some((label) => label.name === 'dependencies'))
   })
 })
-
 
 describe.runIf(isIntegration)('GitHub API - Integration', () => {
   test('Manage repository labels', async () => {
@@ -62,7 +70,7 @@ describe.runIf(isIntegration)('GitHub API - Integration', () => {
     const owner = 'harryzcy'
     const labels = await getRepositoryLabels(octokit, owner, repo)
     const labelNames = labels.map((label) => label.name)
-  
+
     // Create a new label
     const newLabel = 'test-label'
     if (!labelNames.includes(newLabel)) {
@@ -72,7 +80,7 @@ describe.runIf(isIntegration)('GitHub API - Integration', () => {
         description: 'This is a test label'
       })
     }
-  
+
     // Update the new label
     await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
       owner,
@@ -80,7 +88,7 @@ describe.runIf(isIntegration)('GitHub API - Integration', () => {
       name: newLabel,
       description: 'This is an updated test label'
     })
-  
+
     // Get the updated label
     const resp = await octokit.request(
       'GET /repos/{owner}/{repo}/labels/{name}',
@@ -91,7 +99,7 @@ describe.runIf(isIntegration)('GitHub API - Integration', () => {
       }
     )
     expect(resp.data.description).toBe('This is an updated test label')
-  
+
     // Delete the new label
     await octokit.request('DELETE /repos/{owner}/{repo}/labels/{name}', {
       owner,
