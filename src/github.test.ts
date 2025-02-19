@@ -9,7 +9,7 @@ import {
 
 const isIntegration = process.env.INTEGRATION === 'true'
 
-describe.skipIf(isIntegration)('GitHub API', () => {
+describe.runIf(!isIntegration)('GitHub API', () => {
   test('Get app user ID', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
