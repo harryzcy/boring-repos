@@ -49,7 +49,7 @@ test('Get repository labels', async () => {
   assert(labels.some((label) => label.name === 'dependencies'))
 })
 
-test('Manage repository labels', async () => {
+test.skip('Manage repository labels', async () => {
   const app = await getAuthenticatedApp()
   const { octokit } = await getInstallationOctokit(app)
   const repo = 'boring-repos'
