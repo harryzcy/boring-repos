@@ -12,6 +12,7 @@
     "build:release": "npm run clean && tsc -p tsconfig.release.json",
     "lint": "eslint .",
     "test": "vitest --run --coverage",
+    "integration": "INTEGRATION=true vitest --run --coverage",
     "test:watch": "vitest",
     "prettier": "prettier --write 'src/**/*.{ts,js}'"
   },
