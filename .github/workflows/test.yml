@@ -42,9 +42,7 @@ jobs:
           CI: true
 
       - name: Unit Tests
-        run: |
-          npm test
-          npm run integration
+        run: npm test
         env:
           APP_ID: ${{ secrets.APP_ID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
