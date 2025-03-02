@@ -30,12 +30,30 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
         env:
           CI: true
-      - run: npm test
+
+      - name: Unit Tests
+        run: npm test
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          GITHUB_USERNAME: harryzcy
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Integration Tests
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.base_ref == 'main')
+        run: npm run integration
         env:
           APP_ID: ${{ secrets.APP_ID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
