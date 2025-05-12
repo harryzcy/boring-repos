@@ -1,16 +1,10 @@
 {
-  "extends": [
-    "github>harryzcy/renovate-config"
-  ],
+  "extends": ["github>harryzcy/renovate-config"],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "^src/dependencies.ts$"
-      ],
-      "matchStrings": [
-        "export const NODE_VERSION = '(?<currentValue>.*?)'\\n"
-      ],
+      "managerFilePatterns": ["/^src/dependencies.ts$/"],
+      "matchStrings": ["export const NODE_VERSION = '(?<currentValue>.*?)'\\n"],
       "depNameTemplate": "nodejs/node",
       "datasourceTemplate": "github-tags",
       "versioningTemplate": "node"
