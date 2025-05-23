@@ -17,10 +17,10 @@
     "prettier": "prettier --write 'src/**/*.{ts,js}'"
   },
   "dependencies": {
-    "@octokit/core": "6.1.5",
-    "@octokit/request-error": "6.1.8",
+    "@octokit/core": "7.0.2",
+    "@octokit/request-error": "7.0.0",
     "cloudflare": "4.3.0",
-    "octokit": "4.1.4"
+    "octokit": "5.0.2"
   },
   "devDependencies": {
     "@octokit/types": "14.0.0",
