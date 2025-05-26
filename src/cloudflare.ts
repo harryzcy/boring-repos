@@ -23,6 +23,7 @@ export const updateNodeVersion = async (accountID: string) => {
         production: {
           env_vars: {
             NODE_VERSION: {
+              type: 'plain_text',
               value: NODE_VERSION
             }
           }
@@ -30,6 +31,7 @@ export const updateNodeVersion = async (accountID: string) => {
         preview: {
           env_vars: {
             NODE_VERSION: {
+              type: 'plain_text',
               value: NODE_VERSION
             }
           }
