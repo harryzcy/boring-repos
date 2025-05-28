@@ -20,7 +20,7 @@
     "@octokit/core": "7.0.2",
     "@octokit/request-error": "7.0.0",
     "cloudflare": "4.3.0",
-    "octokit": "5.0.2"
+    "octokit": "5.0.3"
   },
   "devDependencies": {
     "@octokit/types": "14.1.0",
