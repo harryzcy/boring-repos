@@ -117,8 +117,8 @@ export const getRepository = async (
     const error = err as RequestError
     console.error(`Error getting repository ${owner}/${repo}`)
     console.error({
-      "status": error.status,
-      "response": error.response
+      status: error.status,
+      response: error.response
     })
     return {
       success: false,
