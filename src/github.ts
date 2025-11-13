@@ -94,7 +94,6 @@ interface GetRepositoryFailure {
   success: false
   data: unknown
   status: number
-  error?: Error
 }
 
 type GetRepositoryResult = GetRepositorySuccess | GetRepositoryFailure
