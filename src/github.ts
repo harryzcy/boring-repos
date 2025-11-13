@@ -1,4 +1,5 @@
 import { Endpoints } from '@octokit/types'
+import { RequestError } from '@octokit/request-error'
 import { Octokit } from 'octokit'
 import {
   addUpstream,
@@ -83,16 +84,50 @@ export const getRepositories = async (
 type GetRepositoryResponse =
   Endpoints['GET /repos/{owner}/{repo}']['response']['data']
 
+interface GetRepositorySuccess {
+  success: true
+  data: GetRepositoryResponse
+  status: number
+}
+
+interface GetRepositoryFailure {
+  success: false
+  data: unknown
+  status: number
+  error?: Error
+}
+
+type GetRepositoryResult = GetRepositorySuccess | GetRepositoryFailure
+
 export const getRepository = async (
   octokit: Octokit,
   owner: string,
   repo: string
-): Promise<GetRepositoryResponse> => {
-  const response = await octokit.request('GET /repos/{owner}/{repo}', {
-    owner,
-    repo
-  })
-  return response.data
+): Promise<GetRepositoryResult> => {
+  try {
+    const response = await octokit.request('GET /repos/{owner}/{repo}', {
+      owner,
+      repo
+    })
+    return {
+      success: true,
+      data: response.data,
+      status: response.status
+    }
+  } catch (err) {
+    const error = err as RequestError
+    console.error(`Error getting repository ${owner}/${repo}}`)
+    console.error({
+      "status": error.status,
+      "message": error.message,
+      "responseData": error.response?.data
+    })
+    return {
+      success: false,
+      status: error.status,
+      data: error.response?.data
+    }
+  }
 }
 
 export const fastForwardRepository = async (

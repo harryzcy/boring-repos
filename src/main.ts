@@ -23,8 +23,14 @@ const runGitHub = async (octokit: Octokit, installationId: number) => {
 
   const forkedRepos = await getRepositories(octokit, { isFork: true })
   for (const repo of forkedRepos) {
-    const repoDetail = await getRepository(octokit, repo.owner.login, repo.name)
-    await fastForwardRepository(repoDetail, token, appUserID)
+    const result = await getRepository(octokit, repo.owner.login, repo.name)
+    if (!result.success) {
+      console.error(
+        `Skipping fast-forward for ${repo.full_name} due to error fetching repository details.`
+      )
+      continue
+    }
+    await fastForwardRepository(result.data, token, appUserID)
   }
 
   const originalRepos = await getRepositories(octokit, { isFork: false })
