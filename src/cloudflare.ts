@@ -46,9 +46,14 @@ export const deployServerlessRegistry = async (
   accountID: string,
   apiToken: string
 ) => {
-  const repo = await getRepository(octokit, 'harryzcy', 'serverless-registry')
+  const result = await getRepository(octokit, 'harryzcy', 'serverless-registry')
+  if (!result.success) {
+    throw new Error(
+      `Failed to get serverless-registry repository: ${result.status.toString()}`
+    )
+  }
 
-  const repoDir = await cloneRepository(repo.clone_url, repo.name)
+  const repoDir = await cloneRepository(result.data.clone_url, result.data.name)
 
   const wranglerConfig = await fs.promises.readFile(
     `config/serverless-registry.toml`,
