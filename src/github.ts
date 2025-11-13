@@ -119,7 +119,7 @@ export const getRepository = async (
     console.error(`Error getting repository ${owner}/${repo}}`)
     console.error({
       "status": error.status,
-      "responseData": error.response?.data
+      "response": error.response
     })
     return {
       success: false,
