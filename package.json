@@ -23,6 +23,7 @@
     "octokit": "5.0.5"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@octokit/types": "16.0.0",
     "@octokit/webhooks-types": "7.6.1",
     "@tsconfig/node-lts": "24.0.0",
@@ -31,7 +32,7 @@
     "@typescript-eslint/eslint-plugin": "8.56.0",
     "@typescript-eslint/parser": "8.56.0",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "9.39.2",
+    "eslint": "10.0.0",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.8.1",
     "prettier-plugin-organize-imports": "4.3.0",
