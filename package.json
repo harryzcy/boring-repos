@@ -23,6 +23,7 @@
     "octokit": "5.0.5"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@octokit/types": "16.0.0",
     "@octokit/webhooks-types": "7.6.1",
     "@tsconfig/node-lts": "24.0.0",
