@@ -74,3 +74,7 @@ export const deployServerlessRegistry = async (
     }
   })
 }
+
+export const rollAPIToken = async () => {
+  // TODO: Implement this
+}
