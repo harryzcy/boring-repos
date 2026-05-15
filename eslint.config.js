@@ -2,28 +2,29 @@
 
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import { defineConfig } from 'eslint/config'
 
-export default tseslint.config(
+export default defineConfig(
   {
-    ignores: ['bin/', '*.config.js', '*.config.ts', 'dist/', 'node_modules/'],
+    ignores: ['bin/', '*.config.js', '*.config.ts', 'dist/', 'node_modules/']
   },
   eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
   {
     languageOptions: {
       parserOptions: {
         project: true,
         tsconfigRootDir: import.meta.dirname,
-        ecmaVersion: 2020,
-      },
+        ecmaVersion: 2020
+      }
     },
     rules: {
-      semi: [2, 'never'],
-    },
+      semi: [2, 'never']
+    }
   },
   {
     files: ['**/*.js'],
-    ...tseslint.configs.disableTypeChecked,
-  },
+    ...tseslint.configs.disableTypeChecked
+  }
 )
