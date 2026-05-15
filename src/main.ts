@@ -9,34 +9,15 @@ import {
   getCloudflareAccountID,
   updateNodeVersion
 } from './cloudflare.js'
-import {
-  fastForwardRepository,
-  getAppUserID,
-  getRepositories,
-  getRepository,
-  updateRepositoryLabels
-} from './github.js'
+import { getAppUserID } from './github.js'
+import { syncGitHubRepos, updateGitHubLabels } from './repos.js'
 
 const runGitHub = async (octokit: Octokit, installationId: number) => {
   const appUserID = await getAppUserID(octokit)
   const token = await getAccessToken(octokit, installationId)
 
-  const forkedRepos = await getRepositories(octokit, { isFork: true })
-  for (const repo of forkedRepos) {
-    const result = await getRepository(octokit, repo.owner.login, repo.name)
-    if (!result.success) {
-      console.error(
-        `Skipping fast-forward for ${repo.full_name} due to error fetching repository details.`
-      )
-      continue
-    }
-    await fastForwardRepository(result.data, token, appUserID)
-  }
-
-  const originalRepos = await getRepositories(octokit, { isFork: false })
-  for (const repo of originalRepos) {
-    await updateRepositoryLabels(octokit, repo.owner.login, repo.name)
-  }
+  await syncGitHubRepos(octokit, appUserID, token)
+  await updateGitHubLabels(octokit)
 }
 
 const runCloudflare = async (octokit: Octokit) => {
