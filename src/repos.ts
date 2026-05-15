@@ -1,7 +1,6 @@
 import { Octokit } from 'octokit'
 import {
   fastForwardRepository,
-  getAppUserID,
   getRepositories,
   getRepository,
   updateRepositoryLabels
