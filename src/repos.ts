@@ -39,6 +39,23 @@ export const checkNpmrcFile = async (
 ) => {
   for (const repo of originalRepos) {
     console.log(`Checking .npmrc file for ${repo.full_name}`)
+
+    // Check if package.json exists in the repository before checking for .npmrc
+    try {
+      await octokit.rest.repos.getContent({
+        owner: repo.owner.login,
+        repo: repo.name,
+        path: 'package.json'
+      })
+    } catch (error) {
+      console.warn(
+        `No package.json file found for ${repo.full_name}. Skipping .npmrc check.`,
+        error
+      )
+      continue
+    }
+
+    // Check for .npmrc file in the repository
     try {
       await octokit.rest.repos.getContent({
         owner: repo.owner.login,
@@ -47,6 +64,7 @@ export const checkNpmrcFile = async (
       })
       console.log(`Found .npmrc file for ${repo.full_name}`)
     } catch (error) {
+      // check if error is a 404, if not log the error
       console.error(`Error checking .npmrc file for ${repo.full_name}:`, error)
     }
   }
