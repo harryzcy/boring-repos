@@ -1,7 +1,7 @@
 import { Octokit } from 'octokit'
 import {
   fastForwardRepository,
-  getRepositories,
+  GetRepositoriesResponse,
   getRepository,
   updateRepositoryLabels
 } from './github.js'
@@ -9,9 +9,9 @@ import {
 export const syncGitHubRepos = async (
   octokit: Octokit,
   appUserID: number,
-  token: string
+  token: string,
+  forkedRepos: GetRepositoriesResponse
 ) => {
-  const forkedRepos = await getRepositories(octokit, { isFork: true })
   for (const repo of forkedRepos) {
     const result = await getRepository(octokit, repo.owner.login, repo.name)
     if (!result.success) {
@@ -24,9 +24,29 @@ export const syncGitHubRepos = async (
   }
 }
 
-export const updateGitHubLabels = async (octokit: Octokit) => {
-  const originalRepos = await getRepositories(octokit, { isFork: false })
+export const updateGitHubLabels = async (
+  octokit: Octokit,
+  originalRepos: GetRepositoriesResponse
+) => {
   for (const repo of originalRepos) {
     await updateRepositoryLabels(octokit, repo.owner.login, repo.name)
+  }
+}
+
+export const checkNpmrcFile = async (
+  octokit: Octokit,
+  originalRepos: GetRepositoriesResponse
+) => {
+  for (const repo of originalRepos) {
+    console.log(`Checking .npmrc file for ${repo.full_name}`)
+    try {
+      await octokit.rest.repos.getContent({
+        owner: repo.owner.login,
+        repo: repo.name,
+        path: '.npmrc'
+      })
+    } catch (error) {
+      console.error(`Error checking .npmrc file for ${repo.full_name}:`, error)
+    }
   }
 }

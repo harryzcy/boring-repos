@@ -9,15 +9,19 @@ import {
   getCloudflareAccountID,
   updateNodeVersion
 } from './cloudflare.js'
-import { getAppUserID } from './github.js'
-import { syncGitHubRepos, updateGitHubLabels } from './repos.js'
+import { getAppUserID, getRepositories } from './github.js'
+import { checkNpmrcFile, syncGitHubRepos, updateGitHubLabels } from './repos.js'
 
 const runGitHub = async (octokit: Octokit, installationId: number) => {
   const appUserID = await getAppUserID(octokit)
   const token = await getAccessToken(octokit, installationId)
 
-  await syncGitHubRepos(octokit, appUserID, token)
-  await updateGitHubLabels(octokit)
+  const forkedRepos = await getRepositories(octokit, { isFork: true })
+  const originalRepos = await getRepositories(octokit, { isFork: false })
+
+  await syncGitHubRepos(octokit, appUserID, token, forkedRepos)
+  await updateGitHubLabels(octokit, originalRepos)
+  await checkNpmrcFile(octokit, originalRepos)
 }
 
 const runCloudflare = async (octokit: Octokit) => {
