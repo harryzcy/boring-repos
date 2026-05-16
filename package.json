@@ -34,6 +34,7 @@
     "@vitest/coverage-v8": "4.1.6",
     "eslint": "10.3.0",
     "eslint-config-prettier": "10.1.8",
+    "jiti": "2.7.0",
     "prettier": "3.8.3",
     "prettier-plugin-organize-imports": "4.3.0",
     "rimraf": "6.1.3",
