@@ -16,6 +16,9 @@ permissions:
 jobs:
   super-linter:
     uses: harryzcy/github-actions/.github/workflows/linter.yml@38ef6ea13dbde6399db653abb69139ac6a6be481 # main
+  
+  npm-lint:
+    uses: harryzcy/github-actions/.github/workflows/npm-lint.yml@38ef6ea13dbde6399db653abb69139ac6a6be481 # main
 
   prettier:
     uses: harryzcy/github-actions/.github/workflows/prettier.yml@38ef6ea13dbde6399db653abb69139ac6a6be481 # main
