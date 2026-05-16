@@ -45,6 +45,7 @@ export const checkNpmrcFile = async (
         repo: repo.name,
         path: '.npmrc'
       })
+      console.log(`Found .npmrc file for ${repo.full_name}`)
     } catch (error) {
       console.error(`Error checking .npmrc file for ${repo.full_name}:`, error)
     }
