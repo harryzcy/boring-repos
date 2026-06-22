@@ -35,8 +35,22 @@ const run = async () => {
   const app = await getAuthenticatedApp()
   const { octokit, installationId } = await getInstallationOctokit(app)
 
-  await runCloudflare(octokit)
-  await runGitHub(octokit, installationId)
+  let hasError = false
+  try {
+    await runCloudflare(octokit)
+  } catch (error) {
+    console.error('Error running Cloudflare tasks:', error)
+    hasError = true
+  }
+  try {
+    await runGitHub(octokit, installationId)
+  } catch (error) {
+    console.error('Error running GitHub tasks:', error)
+    hasError = true
+  }
+  if (hasError) {
+    process.exit(1)
+  }
 }
 
 await run()
