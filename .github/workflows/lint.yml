@@ -15,13 +15,13 @@ permissions:
 
 jobs:
   super-linter:
-    uses: harryzcy/github-actions/.github/workflows/linter.yml@3ce6f550e4cc0f77ae4ce84604c55e9b41dab049 # main
+    uses: harryzcy/github-actions/.github/workflows/linter.yml@1d82aac2d0c32747989d4cf82f3f69e05f22ac76 # main
   
   npm-lint:
-    uses: harryzcy/github-actions/.github/workflows/npm-lint.yml@3ce6f550e4cc0f77ae4ce84604c55e9b41dab049 # main
+    uses: harryzcy/github-actions/.github/workflows/npm-lint.yml@1d82aac2d0c32747989d4cf82f3f69e05f22ac76 # main
 
   prettier:
-    uses: harryzcy/github-actions/.github/workflows/prettier.yml@3ce6f550e4cc0f77ae4ce84604c55e9b41dab049 # main
+    uses: harryzcy/github-actions/.github/workflows/prettier.yml@1d82aac2d0c32747989d4cf82f3f69e05f22ac76 # main
 
   spelling:
-    uses: harryzcy/github-actions/.github/workflows/spelling.yml@3ce6f550e4cc0f77ae4ce84604c55e9b41dab049 # main
+    uses: harryzcy/github-actions/.github/workflows/spelling.yml@1d82aac2d0c32747989d4cf82f3f69e05f22ac76 # main
