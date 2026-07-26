@@ -1,4 +1,5 @@
-import { App, Octokit } from 'octokit'
+import type { Octokit } from 'octokit'
+import { App } from 'octokit'
 import {
   getAppID,
   getClientID,
@@ -15,13 +16,15 @@ export const getAuthenticatedApp = async () => {
 
   const app = new App({
     appId,
-    privateKey,
-    oauth: { clientId, clientSecret }
+    oauth: { clientId, clientSecret },
+    privateKey
   })
 
   const resp = await app.octokit.rest.apps.getAuthenticated()
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (resp.status !== 200) throw new Error('Failed to authenticate app')
+  const HTTP_OK = 200
+  if (resp.status !== HTTP_OK) {
+    throw new Error('Failed to authenticate app')
+  }
 
   return app
 }
@@ -31,12 +34,12 @@ export const getInstallationOctokit = async (app: App) => {
   const { data } = await app.octokit.request(
     'GET /users/{username}/installation',
     {
-      username: username
+      username
     }
   )
   return {
-    octokit: await app.getInstallationOctokit(data.id),
-    installationId: data.id
+    installationId: data.id,
+    octokit: await app.getInstallationOctokit(data.id)
   }
 }
 

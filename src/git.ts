@@ -11,8 +11,8 @@ export const runCommand = (
     env?: NodeJS.ProcessEnv
     hideError?: boolean
   }
-): Promise<string> => {
-  return new Promise(function (resolve, reject) {
+): Promise<string> => 
+  new Promise(function (resolve, reject) {
     exec(
       cmd,
       {
@@ -34,7 +34,7 @@ export const runCommand = (
       }
     )
   })
-}
+
 
 export const cloneRepository = async (gitURL: string, repoName: string) => {
   const ts = Math.floor(Date.now() / 1000)

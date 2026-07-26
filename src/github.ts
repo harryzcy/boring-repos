@@ -1,6 +1,6 @@
-import { Endpoints } from '@octokit/types'
+import type { Endpoints } from '@octokit/types'
 import { RequestError } from '@octokit/request-error'
-import { Octokit } from 'octokit'
+import type { Octokit } from 'octokit'
 import {
   addUpstream,
   checkIfBranchExists,
@@ -17,34 +17,34 @@ import {
 const IGNORE_REPOS = process.env.IGNORE_REPOS?.split(',') ?? []
 export const REPO_LABELS = [
   {
-    name: 'bug',
     color: 'd73a4a',
-    description: "Something isn't working"
+    description: "Something isn't working",
+    name: 'bug'
   },
   {
-    name: 'chore',
     color: '44b274',
-    description: 'Maintenance'
+    description: 'Maintenance',
+    name: 'chore'
   },
   {
-    name: 'dependencies',
     color: 'ededed',
-    description: 'Dependencies'
+    description: 'Dependencies',
+    name: 'dependencies'
   },
   {
-    name: 'enhancement',
     color: 'a2eeef',
-    description: 'New feature or request'
+    description: 'New feature or request',
+    name: 'enhancement'
   },
   {
-    name: 'skip-changelog',
     color: 'bfdadc',
-    description: 'Do not include in changelog'
+    description: 'Do not include in changelog',
+    name: 'skip-changelog'
   },
   {
-    name: 'wontfix',
     color: 'ffffff',
-    description: 'This will not be worked on'
+    description: 'This will not be worked on',
+    name: 'wontfix'
   }
 ]
 
@@ -61,7 +61,7 @@ export interface GetRepositoriesParams {
 export type GetRepositoriesResponse =
   Endpoints['GET /user/repos']['response']['data']
 
-// getRepositories returns all repositories, optionally filtering by fork status
+// GetRepositories returns all repositories, optionally filtering by fork status
 export const getRepositories = async (
   octokit: Octokit,
   { isFork }: GetRepositoriesParams
@@ -69,9 +69,9 @@ export const getRepositories = async (
   const response = await octokit.paginate('GET /installation/repositories', {
     per_page: 100
   })
-  let repos = response.filter((repo) => {
-    return !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
-  })
+  let repos = response.filter((repo) => 
+    !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
+  )
   if (isFork !== undefined) {
     repos = repos.filter((repo) => repo.fork === isFork)
   }
@@ -109,9 +109,9 @@ export const getRepository = async (
       repo
     })
     return {
-      success: true,
       data: response.data,
-      status: response.status
+      status: response.status,
+      success: true
     }
   } catch (err) {
     if (!(err instanceof RequestError)) {
@@ -119,13 +119,13 @@ export const getRepository = async (
     }
     console.error(`Error getting repository ${owner}/${repo}`)
     console.error({
-      status: err.status,
-      response: err.response
+      response: err.response,
+      status: err.status
     })
     return {
-      success: false,
+      data: err.response?.data,
       status: err.status,
-      data: err.response?.data
+      success: false
     }
   }
 }
@@ -144,7 +144,7 @@ export const fastForwardRepository = async (
     const repoDir = await cloneRepository(cloneURL, repo.name)
     await updateCommitter(repoDir, appUserID)
 
-    if (!repo.parent) throw new Error('No parent repo')
+    if (!repo.parent) {throw new Error('No parent repo')}
     await addUpstream(repoDir, repo.parent.clone_url)
     await fetchUpstream(repoDir)
 
@@ -187,9 +187,9 @@ export const getRepositoryLabels = async (
     repo
   })
   return response.data.map((label) => ({
-    name: label.name,
     color: label.color,
-    description: label.description
+    description: label.description,
+    name: label.name
   }))
 }
 
@@ -240,12 +240,12 @@ export const updateRepositoryLabel = async (
   { name, newName, color, description }: UpdateRepositoryLabelParams
 ) => {
   await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
-    owner,
-    repo,
+    color: color,
+    description: description,
     name,
     new_name: newName,
-    description: description,
-    color: color
+    owner,
+    repo
   })
 }
 
@@ -262,10 +262,10 @@ export const createRepositoryLabel = async (
   { name, color, description }: CreateRepositoryLabelParams
 ) => {
   await octokit.request('POST /repos/{owner}/{repo}/labels', {
-    owner,
-    repo,
-    name,
+    color,
     description,
-    color
+    name,
+    owner,
+    repo
   })
 }

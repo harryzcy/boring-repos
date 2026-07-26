@@ -1,12 +1,11 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "typescript"
-  ],
+  "plugins": ["typescript"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
     "pedantic": "error",
+    "style": "error"
   },
   "options": {
     "typeAware": true
@@ -22,22 +21,15 @@
     "node_modules/"
   ],
   "rules": {
-    "typescript/prefer-readonly-parameter-types": "off",
+    "typescript/prefer-readonly-parameter-types": "off"
   },
   "overrides": [
     {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "rules": {}
     },
     {
-      "files": [
-        "**/*.js"
-      ],
+      "files": ["**/*.js"],
       "rules": {
         "typescript/await-thenable": "off",
         "typescript/consistent-return": "off",
