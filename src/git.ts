@@ -1,8 +1,19 @@
 import { exec } from 'child_process'
 import fs from 'fs'
 
-const TEMP_DIR = process.env.TEMP_DIR ?? '/tmp'
 const APP_NAME = 'boring-repos[bot]'
+
+interface Env {
+  TEMP_DIR?: string
+}
+
+function getEnv(): Env {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const env = process.env as unknown as Env
+  return env
+}
+
+const TEMP_DIR = getEnv().TEMP_DIR ?? '/tmp'
 
 export const runCommand = async (
   cmd: string,
