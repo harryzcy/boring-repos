@@ -1,11 +1,12 @@
 import { assert, describe, expect, test } from 'vitest'
-import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
+
 import {
   createRepositoryLabel,
   getAppUserID,
   getRepositories,
   getRepositoryLabels
 } from './github.js'
+import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
 
 const isIntegration = process.env.INTEGRATION === 'true'
 
@@ -46,7 +47,8 @@ describe.runIf(!isIntegration)('GitHub API - Repository', () => {
       owner: 'harryzcy',
       repo: 'boring-repos'
     })
-    expect(repo.status).toBe(200)
+    const HTTP_OK = 200
+    expect(repo.status).toBe(HTTP_OK)
     assert(repo.data.full_name === 'harryzcy/boring-repos')
     assert(!repo.data.fork)
   })
@@ -65,6 +67,7 @@ describe.runIf(!isIntegration)('GitHub API - Repository', () => {
 })
 
 describe.runIf(isIntegration)('GitHub API - Integration', () => {
+  // oxlint-disable-next-line max-statements
   test('Manage repository labels', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)

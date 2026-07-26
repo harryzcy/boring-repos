@@ -1,5 +1,5 @@
-import type { Octokit } from 'octokit'
-import { App } from 'octokit'
+import { App, type Octokit } from 'octokit'
+
 import {
   getAppID,
   getClientID,

@@ -1,4 +1,5 @@
 import type { Octokit } from 'octokit'
+
 import {
   fastForwardRepository,
   getRepositories,

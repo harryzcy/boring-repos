@@ -1,6 +1,7 @@
 import { assert } from 'console'
 import fs from 'fs'
 import { test } from 'vitest'
+
 import { checkIfBranchExists, cloneRepository } from './git.js'
 
 test('Clone repository', async () => {

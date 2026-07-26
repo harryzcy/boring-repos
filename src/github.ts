@@ -1,6 +1,7 @@
 import type { Endpoints } from '@octokit/types'
-import { RequestError } from '@octokit/request-error'
 import type { Octokit } from 'octokit'
+import { RequestError } from '@octokit/request-error'
+
 import {
   addUpstream,
   checkIfBranchExists,
@@ -69,14 +70,14 @@ export const getRepositories = async (
   const response = await octokit.paginate('GET /installation/repositories', {
     per_page: 100
   })
-  let repos = response.filter((repo) => 
-    !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
+  let repos = response.filter(
+    (repo) => !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   )
   if (isFork !== undefined) {
     repos = repos.filter((repo) => repo.fork === isFork)
   }
   console.log(
-    `Found ${repos.length.toString()} forked repos: ${repos.map((r) => r.full_name).join(', ')}`
+    `Found ${repos.length.toString()} forked repos: ${repos.map((repo) => repo.full_name).join(', ')}`
   )
   return repos
 }
@@ -130,6 +131,7 @@ export const getRepository = async (
   }
 }
 
+// oxlint-disable-next-line max-statements
 export const fastForwardRepository = async (
   repo: GetRepositoryResponse,
   token: string,
@@ -144,7 +146,9 @@ export const fastForwardRepository = async (
     const repoDir = await cloneRepository(cloneURL, repo.name)
     await updateCommitter(repoDir, appUserID)
 
-    if (!repo.parent) {throw new Error('No parent repo')}
+    if (!repo.parent) {
+      throw new Error('No parent repo')
+    }
     await addUpstream(repoDir, repo.parent.clone_url)
     await fetchUpstream(repoDir)
 
@@ -164,8 +168,8 @@ export const fastForwardRepository = async (
     await pushChanges(repoDir, branch)
     await pushTags(repoDir)
     await deleteDirectory(repoDir)
-  } catch (e) {
-    console.error(`Failed to fast-forward ${repo.full_name}`, e)
+  } catch (err) {
+    console.error(`Failed to fast-forward ${repo.full_name}`, err)
   }
 }
 
@@ -193,6 +197,7 @@ export const getRepositoryLabels = async (
   }))
 }
 
+// oxlint-disable-next-line max-statements
 export const updateRepositoryLabels = async (
   octokit: Octokit,
   owner: string,
@@ -240,8 +245,8 @@ export const updateRepositoryLabel = async (
   { name, newName, color, description }: UpdateRepositoryLabelParams
 ) => {
   await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
-    color: color,
-    description: description,
+    color,
+    description,
     name,
     new_name: newName,
     owner,

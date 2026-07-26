@@ -1,8 +1,9 @@
 import Cloudflare from 'cloudflare'
-import fs from 'node:fs'
 import type { Octokit } from 'octokit'
-import { NODE_VERSION } from './dependencies.js'
+import fs from 'node:fs'
+
 import { cloneRepository, runCommand } from './git.js'
+import { NODE_VERSION } from './dependencies.js'
 import { getRepository } from './github.js'
 
 const cloudflare = new Cloudflare()

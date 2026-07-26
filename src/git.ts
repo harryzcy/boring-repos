@@ -11,32 +11,37 @@ export const runCommand = (
     env?: NodeJS.ProcessEnv
     hideError?: boolean
   }
-): Promise<string> => 
-  new Promise(function (resolve, reject) {
+): Promise<string> =>
+  new Promise((resolve, reject) => {
     exec(
       cmd,
       {
         cwd: options?.workingDir,
         env: options?.env,
         // 1MB
+        // oxlint-disable-next-line no-magic-numbers
         maxBuffer: 1024 * 1024
       },
-      function (err, stdout, stderr) {
+      (err, stdout, stderr) => {
         const hideError = options?.hideError ?? false
         if (err && !hideError) {
           const error = err as Error
           reject(error)
           return
         }
-        if (stdout !== '') console.log(stdout)
-        if (stderr !== '') console.error(stderr)
+        if (stdout !== '') {
+          console.log(stdout)
+        }
+        if (stderr !== '') {
+          console.error(stderr)
+        }
         resolve(stdout || stderr)
       }
     )
   })
 
-
 export const cloneRepository = async (gitURL: string, repoName: string) => {
+  // oxlint-disable-next-line no-magic-numbers
   const ts = Math.floor(Date.now() / 1000)
   const targetDir = `${TEMP_DIR}/${repoName}-${ts.toString()}`
   await runCommand(`git clone ${gitURL} ${targetDir}`)
