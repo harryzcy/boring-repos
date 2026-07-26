@@ -207,10 +207,7 @@ export const updateRepositoryLabels = async (
   let created = 0
   let updated = 0
   for (const label of REPO_LABELS) {
-    if (!(label.name in labelNames)) {
-      await createRepositoryLabel(octokit, owner, repo, label)
-      created += 1
-    } else {
+    if ((label.name in labelNames)) {
       const currentLabel = labelNames[label.name]
       if (
         currentLabel.color !== label.color ||
@@ -219,6 +216,9 @@ export const updateRepositoryLabels = async (
         await updateRepositoryLabel(octokit, owner, repo, label)
         updated += 1
       }
+    } else {
+      await createRepositoryLabel(octokit, owner, repo, label)
+      created += 1
     }
   }
   console.log(
