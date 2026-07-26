@@ -8,6 +8,7 @@ import { getRepository } from './github.js'
 const cloudflare = new Cloudflare()
 
 export const getCloudflareAccountID = () => {
+  // oxlint-disable-next-line typescript/strict-boolean-expressions
   if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
     throw new Error('CLOUDFLARE_ACCOUNT_ID is not set')
   }

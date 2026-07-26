@@ -36,7 +36,9 @@ describe.runIf(!isIntegration)('GitHub API', () => {
     }
     assert(!actual.includes('not exist'))
   })
+})
 
+describe.runIf(!isIntegration)('GitHub API - Repository', () => {
   test('Get a repository', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)

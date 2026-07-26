@@ -4,7 +4,7 @@ import fs from 'fs'
 const TEMP_DIR = process.env.TEMP_DIR ?? '/tmp'
 const APP_NAME = 'boring-repos[bot]'
 
-export const runCommand = async (
+export const runCommand = (
   cmd: string,
   options?: {
     workingDir?: string
@@ -18,10 +18,12 @@ export const runCommand = async (
       {
         cwd: options?.workingDir,
         env: options?.env,
-        maxBuffer: 1024 * 1024 // 1MB
+        // 1MB
+        maxBuffer: 1024 * 1024
       },
       function (err, stdout, stderr) {
-        if (err && !options?.hideError) {
+        const hideError = options?.hideError ?? false
+        if (err && !hideError) {
           const error = err as Error
           reject(error)
           return

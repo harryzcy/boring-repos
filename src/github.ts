@@ -155,7 +155,7 @@ export const fastForwardRepository = async (
         break
       }
     }
-    if (!branch) {
+    if (branch === null) {
       branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
@@ -207,7 +207,7 @@ export const updateRepositoryLabels = async (
   let created = 0
   let updated = 0
   for (const label of REPO_LABELS) {
-    if ((label.name in labelNames)) {
+    if (label.name in labelNames) {
       const currentLabel = labelNames[label.name]
       if (
         currentLabel.color !== label.color ||
