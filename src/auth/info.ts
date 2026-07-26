@@ -1,47 +1,40 @@
 import fs from 'fs'
-import process from 'process'
 
 export function getUsername(): string {
-  const username = process.env.GITHUB_USERNAME
-  if (!username) {
+  if (!process.env.GITHUB_USERNAME) {
     throw new Error('GITHUB_USERNAME is not set')
   }
-  return username
+  return process.env.GITHUB_USERNAME
 }
 
 export function getAppID(): string {
-  const appID = process.env.APP_ID
-  if (!appID) {
+  if (!process.env.APP_ID) {
     throw new Error('APP_ID is not set')
   }
-  return appID
+  return process.env.APP_ID
 }
 
 export function getClientID(): string {
-  const clientID = process.env.CLIENT_ID
-  if (!clientID) {
+  if (!process.env.CLIENT_ID) {
     throw new Error('CLIENT_ID is not set')
   }
-  return clientID
+  return process.env.CLIENT_ID
 }
 
 export function getClientSecret(): string {
-  const clientSecret = process.env.CLIENT_SECRET
-  if (!clientSecret) {
+  if (!process.env.CLIENT_SECRET) {
     throw new Error('CLIENT_SECRET is not set')
   }
-  return clientSecret
+  return process.env.CLIENT_SECRET
 }
 
 export async function getPrivateKey(): Promise<string> {
-  const privateKey = process.env.PRIVATE_KEY
-  if (privateKey) {
-    return privateKey
+  if (process.env.PRIVATE_KEY) {
+    return process.env.PRIVATE_KEY
   }
 
-  const privateKeyFile = process.env.PRIVATE_KEY_FILE
-  if (privateKeyFile) {
-    const buffer = await fs.promises.readFile(privateKeyFile)
+  if (process.env.PRIVATE_KEY_FILE) {
+    const buffer = await fs.promises.readFile(process.env.PRIVATE_KEY_FILE)
     return buffer.toString()
   }
 
