@@ -4,7 +4,8 @@
     "typescript"
   ],
   "categories": {
-    "correctness": "error"
+    "correctness": "error",
+    "suspicious": "error",
   },
   "options": {
     "typeAware": true

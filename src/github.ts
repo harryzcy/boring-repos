@@ -114,16 +114,18 @@ export const getRepository = async (
       status: response.status
     }
   } catch (err) {
-    const error = err as RequestError
+    if (!(err instanceof RequestError)) {
+      throw err
+    }
     console.error(`Error getting repository ${owner}/${repo}`)
     console.error({
-      status: error.status,
-      response: error.response
+      status: err.status,
+      response: err.response
     })
     return {
       success: false,
-      status: error.status,
-      data: error.response?.data
+      status: err.status,
+      data: err.response?.data
     }
   }
 }
