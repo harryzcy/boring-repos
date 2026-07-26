@@ -1,23 +1,8 @@
 import fs from 'fs'
 import process from 'process'
 
-interface Env {
-  GITHUB_USERNAME?: string
-  APP_ID?: string
-  CLIENT_ID?: string
-  CLIENT_SECRET?: string
-  PRIVATE_KEY?: string
-  PRIVATE_KEY_FILE?: string
-}
-
-function getEnv(): Env {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const env = process.env as unknown as Env
-  return env
-}
-
 export function getUsername(): string {
-  const username = getEnv().GITHUB_USERNAME
+  const username = process.env.GITHUB_USERNAME
   if (!username) {
     throw new Error('GITHUB_USERNAME is not set')
   }
@@ -25,7 +10,7 @@ export function getUsername(): string {
 }
 
 export function getAppID(): string {
-  const appID = getEnv().APP_ID
+  const appID = process.env.APP_ID
   if (!appID) {
     throw new Error('APP_ID is not set')
   }
@@ -33,7 +18,7 @@ export function getAppID(): string {
 }
 
 export function getClientID(): string {
-  const clientID = getEnv().CLIENT_ID
+  const clientID = process.env.CLIENT_ID
   if (!clientID) {
     throw new Error('CLIENT_ID is not set')
   }
@@ -41,7 +26,7 @@ export function getClientID(): string {
 }
 
 export function getClientSecret(): string {
-  const clientSecret = getEnv().CLIENT_SECRET
+  const clientSecret = process.env.CLIENT_SECRET
   if (!clientSecret) {
     throw new Error('CLIENT_SECRET is not set')
   }
@@ -49,12 +34,12 @@ export function getClientSecret(): string {
 }
 
 export async function getPrivateKey(): Promise<string> {
-  const privateKey = getEnv().PRIVATE_KEY
+  const privateKey = process.env.PRIVATE_KEY
   if (privateKey) {
     return privateKey
   }
 
-  const privateKeyFile = getEnv().PRIVATE_KEY_FILE
+  const privateKeyFile = process.env.PRIVATE_KEY_FILE
   if (privateKeyFile) {
     const buffer = await fs.promises.readFile(privateKeyFile)
     return buffer.toString()
