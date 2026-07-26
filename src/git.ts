@@ -22,7 +22,8 @@ export const runCommand = async (
       },
       function (err, stdout, stderr) {
         if (err && !options?.hideError) {
-          reject(err)
+          const error = err as Error
+          reject(error)
           return
         }
         if (stdout !== '') console.log(stdout)
