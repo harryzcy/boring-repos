@@ -1,6 +1,7 @@
-import { Endpoints } from '@octokit/types'
+import type { Endpoints } from '@octokit/types'
+import type { Octokit } from 'octokit'
 import { RequestError } from '@octokit/request-error'
-import { Octokit } from 'octokit'
+
 import {
   addUpstream,
   checkIfBranchExists,
@@ -17,34 +18,34 @@ import {
 const IGNORE_REPOS = process.env.IGNORE_REPOS?.split(',') ?? []
 export const REPO_LABELS = [
   {
-    name: 'bug',
     color: 'd73a4a',
-    description: "Something isn't working"
+    description: "Something isn't working",
+    name: 'bug'
   },
   {
-    name: 'chore',
     color: '44b274',
-    description: 'Maintenance'
+    description: 'Maintenance',
+    name: 'chore'
   },
   {
-    name: 'dependencies',
     color: 'ededed',
-    description: 'Dependencies'
+    description: 'Dependencies',
+    name: 'dependencies'
   },
   {
-    name: 'enhancement',
     color: 'a2eeef',
-    description: 'New feature or request'
+    description: 'New feature or request',
+    name: 'enhancement'
   },
   {
-    name: 'skip-changelog',
     color: 'bfdadc',
-    description: 'Do not include in changelog'
+    description: 'Do not include in changelog',
+    name: 'skip-changelog'
   },
   {
-    name: 'wontfix',
     color: 'ffffff',
-    description: 'This will not be worked on'
+    description: 'This will not be worked on',
+    name: 'wontfix'
   }
 ]
 
@@ -61,7 +62,7 @@ export interface GetRepositoriesParams {
 export type GetRepositoriesResponse =
   Endpoints['GET /user/repos']['response']['data']
 
-// getRepositories returns all repositories, optionally filtering by fork status
+// GetRepositories returns all repositories, optionally filtering by fork status
 export const getRepositories = async (
   octokit: Octokit,
   { isFork }: GetRepositoriesParams
@@ -69,14 +70,14 @@ export const getRepositories = async (
   const response = await octokit.paginate('GET /installation/repositories', {
     per_page: 100
   })
-  let repos = response.filter((repo) => {
-    return !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
-  })
+  let repos = response.filter(
+    (repo) => !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
+  )
   if (isFork !== undefined) {
     repos = repos.filter((repo) => repo.fork === isFork)
   }
   console.log(
-    `Found ${repos.length.toString()} forked repos: ${repos.map((r) => r.full_name).join(', ')}`
+    `Found ${repos.length.toString()} forked repos: ${repos.map((repo) => repo.full_name).join(', ')}`
   )
   return repos
 }
@@ -109,25 +110,28 @@ export const getRepository = async (
       repo
     })
     return {
-      success: true,
       data: response.data,
-      status: response.status
+      status: response.status,
+      success: true
     }
   } catch (err) {
-    const error = err as RequestError
+    if (!(err instanceof RequestError)) {
+      throw err
+    }
     console.error(`Error getting repository ${owner}/${repo}`)
     console.error({
-      status: error.status,
-      response: error.response
+      response: err.response,
+      status: err.status
     })
     return {
-      success: false,
-      status: error.status,
-      data: error.response?.data
+      data: err.response?.data,
+      status: err.status,
+      success: false
     }
   }
 }
 
+// oxlint-disable-next-line max-statements
 export const fastForwardRepository = async (
   repo: GetRepositoryResponse,
   token: string,
@@ -142,7 +146,9 @@ export const fastForwardRepository = async (
     const repoDir = await cloneRepository(cloneURL, repo.name)
     await updateCommitter(repoDir, appUserID)
 
-    if (!repo.parent) throw new Error('No parent repo')
+    if (!repo.parent) {
+      throw new Error('No parent repo')
+    }
     await addUpstream(repoDir, repo.parent.clone_url)
     await fetchUpstream(repoDir)
 
@@ -153,7 +159,7 @@ export const fastForwardRepository = async (
         break
       }
     }
-    if (!branch) {
+    if (branch === null) {
       branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
@@ -162,8 +168,8 @@ export const fastForwardRepository = async (
     await pushChanges(repoDir, branch)
     await pushTags(repoDir)
     await deleteDirectory(repoDir)
-  } catch (e) {
-    console.error(`Failed to fast-forward ${repo.full_name}`, e)
+  } catch (err) {
+    console.error(`Failed to fast-forward ${repo.full_name}`, err)
   }
 }
 
@@ -185,12 +191,13 @@ export const getRepositoryLabels = async (
     repo
   })
   return response.data.map((label) => ({
-    name: label.name,
     color: label.color,
-    description: label.description
+    description: label.description,
+    name: label.name
   }))
 }
 
+// oxlint-disable-next-line max-statements
 export const updateRepositoryLabels = async (
   octokit: Octokit,
   owner: string,
@@ -205,10 +212,7 @@ export const updateRepositoryLabels = async (
   let created = 0
   let updated = 0
   for (const label of REPO_LABELS) {
-    if (!(label.name in labelNames)) {
-      await createRepositoryLabel(octokit, owner, repo, label)
-      created += 1
-    } else {
+    if (label.name in labelNames) {
       const currentLabel = labelNames[label.name]
       if (
         currentLabel.color !== label.color ||
@@ -217,6 +221,9 @@ export const updateRepositoryLabels = async (
         await updateRepositoryLabel(octokit, owner, repo, label)
         updated += 1
       }
+    } else {
+      await createRepositoryLabel(octokit, owner, repo, label)
+      created += 1
     }
   }
   console.log(
@@ -238,12 +245,12 @@ export const updateRepositoryLabel = async (
   { name, newName, color, description }: UpdateRepositoryLabelParams
 ) => {
   await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
-    owner,
-    repo,
+    color,
+    description,
     name,
     new_name: newName,
-    description: description,
-    color: color
+    owner,
+    repo
   })
 }
 
@@ -260,10 +267,10 @@ export const createRepositoryLabel = async (
   { name, color, description }: CreateRepositoryLabelParams
 ) => {
   await octokit.request('POST /repos/{owner}/{repo}/labels', {
-    owner,
-    repo,
-    name,
+    color,
     description,
-    color
+    name,
+    owner,
+    repo
   })
 }

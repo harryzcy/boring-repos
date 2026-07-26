@@ -1,3 +1,4 @@
+// oxlint-disable typescript/strict-boolean-expressions
 import fs from 'fs'
 
 export function getUsername(): string {

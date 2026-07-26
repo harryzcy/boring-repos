@@ -1,13 +1,15 @@
 import Cloudflare from 'cloudflare'
+import type { Octokit } from 'octokit'
 import fs from 'node:fs'
-import { Octokit } from 'octokit'
-import { NODE_VERSION } from './dependencies.js'
+
 import { cloneRepository, runCommand } from './git.js'
+import { NODE_VERSION } from './dependencies.js'
 import { getRepository } from './github.js'
 
 const cloudflare = new Cloudflare()
 
 export const getCloudflareAccountID = () => {
+  // oxlint-disable-next-line typescript/strict-boolean-expressions
   if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
     throw new Error('CLOUDFLARE_ACCOUNT_ID is not set')
   }
@@ -20,7 +22,7 @@ export const updateNodeVersion = async (accountID: string) => {
     await cloudflare.pages.projects.edit(project, {
       account_id: accountID,
       deployment_configs: {
-        production: {
+        preview: {
           env_vars: {
             NODE_VERSION: {
               type: 'plain_text',
@@ -28,7 +30,7 @@ export const updateNodeVersion = async (accountID: string) => {
             }
           }
         },
-        preview: {
+        production: {
           env_vars: {
             NODE_VERSION: {
               type: 'plain_text',
@@ -66,11 +68,11 @@ export const deployServerlessRegistry = async (
   })
 
   await runCommand(`npx wrangler deploy --env production`, {
-    workingDir: repoDir,
     env: {
       ...process.env,
       CLOUDFLARE_ACCOUNT_ID: accountID,
       CLOUDFLARE_API_TOKEN: apiToken
-    }
+    },
+    workingDir: repoDir
   })
 }
