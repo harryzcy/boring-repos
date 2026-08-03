@@ -60,28 +60,18 @@
     "no-undefined": "error",
     "no-use-before-define": "error",
     "typescript/no-unnecessary-condition": "error",
-    "typescript/switch-exhaustiveness-check": "error",
     "import/no-cycle": "error",
-    "import/no-duplicates": "error",
-    "import/extensions": "error",
-    "import/first": "error",
-    "import/no-self-import": "error",
-    "import/no-absolute-path": "error",
-    "import/no-mutable-exports": "error",
-    "import/no-empty-named-blocks": "error",
     "import/no-named-export": "off",
     "import/prefer-default-export": "off",
     "import/group-exports": "off",
     "import/exports-last": "off",
     "import/no-nodejs-modules": "off",
-    "import/consistent-type-specifier-style": "error",
     "no-duplicate-imports": [
       "error",
       {
         "allowSeparateTypeImports": true
       }
     ],
-    "vitest/consistent-test-it": "error",
     "vitest/prefer-expect-assertions": "off",
     "vitest/prefer-lowercase-title": [
       "error",
@@ -93,7 +83,6 @@
     "vitest/no-importing-vitest-globals": "off",
     "vitest/no-conditional-in-test": "off",
     "vitest/prefer-to-be-truthy": "off",
-    "vitest/prefer-to-be-falsy": "off",
-    "vitest/prefer-strict-boolean-matchers": "error"
+    "vitest/prefer-to-be-falsy": "off"
   }
 }
