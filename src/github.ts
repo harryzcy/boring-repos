@@ -73,7 +73,7 @@ export const getRepositories = async (
   let repos = response.filter(
     (repo) => !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   )
-  if (isFork !== undefined) {
+  if (typeof isFork === 'boolean') {
     repos = repos.filter((repo) => repo.fork === isFork)
   }
   console.log(
@@ -197,40 +197,6 @@ export const getRepositoryLabels = async (
   }))
 }
 
-// oxlint-disable-next-line max-statements
-export const updateRepositoryLabels = async (
-  octokit: Octokit,
-  owner: string,
-  repo: string
-) => {
-  const labels = await getRepositoryLabels(octokit, owner, repo)
-  const labelNames: Record<string, RepositoryLabel> = {}
-  for (const label of labels) {
-    labelNames[label.name] = label
-  }
-
-  let created = 0
-  let updated = 0
-  for (const label of REPO_LABELS) {
-    if (label.name in labelNames) {
-      const currentLabel = labelNames[label.name]
-      if (
-        currentLabel.color !== label.color ||
-        currentLabel.description !== label.description
-      ) {
-        await updateRepositoryLabel(octokit, owner, repo, label)
-        updated += 1
-      }
-    } else {
-      await createRepositoryLabel(octokit, owner, repo, label)
-      created += 1
-    }
-  }
-  console.log(
-    `Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`
-  )
-}
-
 export interface UpdateRepositoryLabelParams {
   name: string
   newName?: string
@@ -273,4 +239,38 @@ export const createRepositoryLabel = async (
     owner,
     repo
   })
+}
+
+// oxlint-disable-next-line max-statements
+export const updateRepositoryLabels = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string
+) => {
+  const labels = await getRepositoryLabels(octokit, owner, repo)
+  const labelNames: Record<string, RepositoryLabel> = {}
+  for (const label of labels) {
+    labelNames[label.name] = label
+  }
+
+  let created = 0
+  let updated = 0
+  for (const label of REPO_LABELS) {
+    if (label.name in labelNames) {
+      const currentLabel = labelNames[label.name]
+      if (
+        currentLabel.color !== label.color ||
+        currentLabel.description !== label.description
+      ) {
+        await updateRepositoryLabel(octokit, owner, repo, label)
+        updated += 1
+      }
+    } else {
+      await createRepositoryLabel(octokit, owner, repo, label)
+      created += 1
+    }
+  }
+  console.log(
+    `Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`
+  )
 }
