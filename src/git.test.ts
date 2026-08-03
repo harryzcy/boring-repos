@@ -4,7 +4,7 @@ import fs from 'fs/promises'
 
 import { checkIfBranchExists, cloneRepository } from './git.js'
 
-test('Clone repository', async () => {
+test('clone repository', async () => {
   const dir = await cloneRepository(
     'https://github.com/harryzcy/boring-repos',
     'boring-repos'
@@ -19,7 +19,7 @@ test('Clone repository', async () => {
   await fs.rm(dir, { force: true, recursive: true })
 })
 
-test('Check branch exists', async () => {
+test('check branch exists', async () => {
   const dir = await cloneRepository(
     'https://github.com/harryzcy/boring-repos',
     'boring-repos'
