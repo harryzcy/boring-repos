@@ -79,7 +79,7 @@
         "ignoreTopLevelDescribe": true
       }
     ],
-    "vitest/require-top-level-describe": "off",
+    "vitest/require-top-level-describe": "error",
     "vitest/no-importing-vitest-globals": "off",
     "vitest/no-conditional-in-test": "off",
     "vitest/prefer-to-be-truthy": "off",
