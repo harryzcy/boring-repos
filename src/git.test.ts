@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import fs from 'fs/promises'
+import fs from 'node:fs/promises'
 
 import { checkIfBranchExists, cloneRepository } from './git.js'
 

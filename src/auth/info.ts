@@ -1,5 +1,5 @@
 // oxlint-disable typescript/strict-boolean-expressions
-import fs from 'fs'
+import fs from 'node:fs'
 
 export function getUsername(): string {
   if (!process.env.GITHUB_USERNAME) {

@@ -1,6 +1,6 @@
-import { exec } from 'child_process'
-import fs from 'fs'
-import { promisify } from 'util'
+import { exec } from 'node:child_process'
+import fs from 'node:fs'
+import { promisify } from 'node:util'
 
 // Promisify special-cases exec's ChildProcess return; tsc accepts the result
 // oxlint-disable-next-line typescript/strict-void-return
