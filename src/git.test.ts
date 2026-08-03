@@ -1,5 +1,6 @@
-import fs from 'fs/promises'
 import { expect, test } from 'vitest'
+
+import fs from 'fs/promises'
 
 import { checkIfBranchExists, cloneRepository } from './git.js'
 
@@ -24,10 +25,10 @@ test('Check branch exists', async () => {
     'boring-repos'
   )
   const exists = await checkIfBranchExists(dir, 'main')
-  assert(exists)
+  expect(exists).toBe(true)
 
   const notExists = await checkIfBranchExists(dir, 'not-exists')
-  assert(!notExists)
+  expect(notExists).toBe(false)
 
   await fs.rm(dir, { force: true, recursive: true })
 })
