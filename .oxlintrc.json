@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript"],
+  "plugins": ["typescript", "oxc", "import", "jsdoc"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -12,7 +12,8 @@
     "typeCheck": true
   },
   "env": {
-    "builtin": true
+    "builtin": true,
+    "node": true
   },
   "ignorePatterns": [
     "bin/",
@@ -46,6 +47,22 @@
         "allowArrowFunctions": true
       }
     ],
-    "no-continue": "off"
+    "no-continue": "off",
+    "no-undef": "error",
+    "typescript/switch-exhaustiveness-check": "error",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "import/extensions": "error",
+    "import/first": "error",
+    "import/no-self-import": "error",
+    "import/no-absolute-path": "error",
+    "import/no-mutable-exports": "error",
+    "import/no-empty-named-blocks": "error",
+    "import/no-named-export": "off",
+    "import/prefer-default-export": "off",
+    "import/group-exports": "off",
+    "import/exports-last": "off",
+    "import/no-nodejs-modules": "off",
+    "import/consistent-type-specifier-style": "off"
   }
 }
