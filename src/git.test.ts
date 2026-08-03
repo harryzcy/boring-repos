@@ -1,5 +1,5 @@
 import { assert } from 'console'
-import fs from 'fs'
+import fs from 'fs/promises'
 import { test } from 'vitest'
 
 import { checkIfBranchExists, cloneRepository } from './git.js'
@@ -10,9 +10,13 @@ test('Clone repository', async () => {
     'boring-repos'
   )
   assert(dir.startsWith('boring-repos'))
-  assert(fs.existsSync(dir))
+  const exists = await fs
+    .access(dir)
+    .then(() => true)
+    .catch(() => false)
+  assert(exists)
 
-  fs.rmSync(dir, { force: true, recursive: true })
+  await fs.rm(dir, { force: true, recursive: true })
 })
 
 test('Check branch exists', async () => {
@@ -26,5 +30,5 @@ test('Check branch exists', async () => {
   const notExists = await checkIfBranchExists(dir, 'not-exists')
   assert(!notExists)
 
-  fs.rmSync(dir, { force: true, recursive: true })
+  await fs.rm(dir, { force: true, recursive: true })
 })
