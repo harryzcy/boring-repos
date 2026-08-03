@@ -153,13 +153,13 @@ export const fastForwardRepository = async (
     await fetchUpstream(repoDir)
 
     const allowedBranches = ['main', 'master', 'dev', 'v2']
-    let branch: string | undefined = undefined
+    let branch = ''
     for (branch of allowedBranches) {
       if (await checkIfBranchExists(repoDir, branch)) {
         break
       }
     }
-    if (branch === undefined) {
+    if (branch === '') {
       branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
