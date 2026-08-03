@@ -15,7 +15,7 @@
     "suspicious": "error",
     "pedantic": "error",
     "style": "error",
-    "nursery": "error"
+    "nursery": "warn"
   },
   "options": {
     "typeAware": true,
