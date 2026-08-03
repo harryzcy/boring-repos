@@ -1,44 +1,66 @@
 import { exec } from 'child_process'
 import fs from 'fs'
+import { promisify } from 'util'
+
+// Promisify special-cases exec's ChildProcess return; tsc accepts the result
+// oxlint-disable-next-line typescript/strict-void-return
+const execAsync = promisify(exec)
 
 const TEMP_DIR = process.env.TEMP_DIR ?? '/tmp'
 const APP_NAME = 'boring-repos[bot]'
 
-export const runCommand = (
+interface CommandOutput {
+  stdout: string
+  stderr: string
+}
+
+interface RunCommandOptions {
+  workingDir?: string
+  env?: NodeJS.ProcessEnv
+  hideError?: boolean
+}
+
+// A rejected execAsync carries the captured output on the error itself
+const hasCapturedOutput = (error: unknown): error is CommandOutput =>
+  typeof error === 'object' &&
+  error !== null &&
+  'stdout' in error &&
+  'stderr' in error
+
+const execCapturing = async (
   cmd: string,
-  options?: {
-    workingDir?: string
-    env?: NodeJS.ProcessEnv
-    hideError?: boolean
+  options?: RunCommandOptions
+): Promise<CommandOutput> => {
+  try {
+    return await execAsync(cmd, {
+      cwd: options?.workingDir,
+      env: options?.env,
+      // 1MB
+      // oxlint-disable-next-line no-magic-numbers
+      maxBuffer: 1024 * 1024
+    })
+  } catch (error) {
+    if (!(options?.hideError ?? false) || !hasCapturedOutput(error)) {
+      throw error
+    }
+    return { stderr: error.stderr, stdout: error.stdout }
   }
-): Promise<string> =>
-  new Promise((resolve, reject) => {
-    exec(
-      cmd,
-      {
-        cwd: options?.workingDir,
-        env: options?.env,
-        // 1MB
-        // oxlint-disable-next-line no-magic-numbers
-        maxBuffer: 1024 * 1024
-      },
-      (err, stdout, stderr) => {
-        const hideError = options?.hideError ?? false
-        if (err && !hideError) {
-          const error = err as Error
-          reject(error)
-          return
-        }
-        if (stdout !== '') {
-          console.log(stdout)
-        }
-        if (stderr !== '') {
-          console.error(stderr)
-        }
-        resolve(stdout || stderr)
-      }
-    )
-  })
+}
+
+export const runCommand = async (
+  cmd: string,
+  options?: RunCommandOptions
+): Promise<string> => {
+  const { stdout, stderr } = await execCapturing(cmd, options)
+
+  if (stdout !== '') {
+    console.log(stdout)
+  }
+  if (stderr !== '') {
+    console.error(stderr)
+  }
+  return stdout || stderr
+}
 
 export const cloneRepository = async (gitURL: string, repoName: string) => {
   // oxlint-disable-next-line no-magic-numbers

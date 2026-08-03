@@ -7,7 +7,8 @@
     "jsdoc",
     "unicorn",
     "node",
-    "vitest"
+    "vitest",
+    "promise"
   ],
   "categories": {
     "correctness": "error",
@@ -81,6 +82,7 @@
     "vitest/no-importing-vitest-globals": "off",
     "vitest/no-conditional-in-test": "off",
     "vitest/prefer-to-be-truthy": "off",
-    "vitest/prefer-to-be-falsy": "off"
+    "vitest/prefer-to-be-falsy": "off",
+    "typescript/promise-function-async": "error"
   }
 }
