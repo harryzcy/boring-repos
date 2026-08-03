@@ -13,7 +13,8 @@
     "correctness": "error",
     "suspicious": "error",
     "pedantic": "error",
-    "style": "error"
+    "style": "error",
+    "nursery": "error"
   },
   "options": {
     "typeAware": true,
@@ -56,10 +57,8 @@
       }
     ],
     "no-continue": "off",
-    "no-undef": "error",
     "no-undefined": "error",
     "no-use-before-define": "error",
-    "typescript/no-unnecessary-condition": "error",
     "import/no-cycle": "error",
     "import/no-named-export": "off",
     "import/prefer-default-export": "off",
