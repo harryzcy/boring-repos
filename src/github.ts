@@ -114,18 +114,18 @@ export const getRepository = async (
       status: response.status,
       success: true
     }
-  } catch (err) {
-    if (!(err instanceof RequestError)) {
-      throw err
+  } catch (error) {
+    if (!(error instanceof RequestError)) {
+      throw error
     }
     console.error(`Error getting repository ${owner}/${repo}`)
     console.error({
-      response: err.response,
-      status: err.status
+      response: error.response,
+      status: error.status
     })
     return {
-      data: err.response?.data,
-      status: err.status,
+      data: error.response?.data,
+      status: error.status,
       success: false
     }
   }
@@ -153,13 +153,13 @@ export const fastForwardRepository = async (
     await fetchUpstream(repoDir)
 
     const allowedBranches = ['main', 'master', 'dev', 'v2']
-    let branch: string | null = null
+    let branch: string | undefined = undefined
     for (branch of allowedBranches) {
       if (await checkIfBranchExists(repoDir, branch)) {
         break
       }
     }
-    if (branch === null) {
+    if (branch === undefined) {
       branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
@@ -168,8 +168,8 @@ export const fastForwardRepository = async (
     await pushChanges(repoDir, branch)
     await pushTags(repoDir)
     await deleteDirectory(repoDir)
-  } catch (err) {
-    console.error(`Failed to fast-forward ${repo.full_name}`, err)
+  } catch (error) {
+    console.error(`Failed to fast-forward ${repo.full_name}`, error)
   }
 }
 
