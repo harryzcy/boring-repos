@@ -1,18 +1,29 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript"],
+  "plugins": [
+    "typescript",
+    "oxc",
+    "import",
+    "jsdoc",
+    "unicorn",
+    "node",
+    "vitest",
+    "promise"
+  ],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
     "pedantic": "error",
-    "style": "error"
+    "style": "error",
+    "nursery": "warn"
   },
   "options": {
     "typeAware": true,
     "typeCheck": true
   },
   "env": {
-    "builtin": true
+    "builtin": true,
+    "node": true
   },
   "ignorePatterns": [
     "bin/",
@@ -46,6 +57,33 @@
         "allowArrowFunctions": true
       }
     ],
-    "no-continue": "off"
+    "no-continue": "off",
+    "no-undefined": "error",
+    "no-use-before-define": "error",
+    "unicorn/prefer-node-protocol": "error",
+    "import/no-cycle": "error",
+    "import/no-named-export": "off",
+    "import/prefer-default-export": "off",
+    "import/group-exports": "off",
+    "import/exports-last": "off",
+    "import/no-nodejs-modules": "off",
+    "no-duplicate-imports": [
+      "error",
+      {
+        "allowSeparateTypeImports": true
+      }
+    ],
+    "vitest/prefer-expect-assertions": "off",
+    "vitest/prefer-lowercase-title": [
+      "error",
+      {
+        "ignoreTopLevelDescribe": true
+      }
+    ],
+    "vitest/no-importing-vitest-globals": "off",
+    "vitest/no-conditional-in-test": "off",
+    "vitest/prefer-to-be-truthy": "off",
+    "vitest/prefer-to-be-falsy": "off",
+    "typescript/promise-function-async": "error"
   }
 }

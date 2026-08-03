@@ -73,7 +73,7 @@ export const getRepositories = async (
   let repos = response.filter(
     (repo) => !repo.archived && !IGNORE_REPOS.includes(repo.full_name)
   )
-  if (isFork !== undefined) {
+  if (typeof isFork === 'boolean') {
     repos = repos.filter((repo) => repo.fork === isFork)
   }
   console.log(
@@ -114,18 +114,18 @@ export const getRepository = async (
       status: response.status,
       success: true
     }
-  } catch (err) {
-    if (!(err instanceof RequestError)) {
-      throw err
+  } catch (error) {
+    if (!(error instanceof RequestError)) {
+      throw error
     }
     console.error(`Error getting repository ${owner}/${repo}`)
     console.error({
-      response: err.response,
-      status: err.status
+      response: error.response,
+      status: error.status
     })
     return {
-      data: err.response?.data,
-      status: err.status,
+      data: error.response?.data,
+      status: error.status,
       success: false
     }
   }
@@ -153,13 +153,13 @@ export const fastForwardRepository = async (
     await fetchUpstream(repoDir)
 
     const allowedBranches = ['main', 'master', 'dev', 'v2']
-    let branch: string | null = null
+    let branch = ''
     for (branch of allowedBranches) {
       if (await checkIfBranchExists(repoDir, branch)) {
         break
       }
     }
-    if (branch === null) {
+    if (branch === '') {
       branch = await getDefaultBranch(repoDir)
       throw new Error(`Unexpected default branch: ${branch}`)
     }
@@ -168,8 +168,8 @@ export const fastForwardRepository = async (
     await pushChanges(repoDir, branch)
     await pushTags(repoDir)
     await deleteDirectory(repoDir)
-  } catch (err) {
-    console.error(`Failed to fast-forward ${repo.full_name}`, err)
+  } catch (error) {
+    console.error(`Failed to fast-forward ${repo.full_name}`, error)
   }
 }
 
@@ -195,40 +195,6 @@ export const getRepositoryLabels = async (
     description: label.description,
     name: label.name
   }))
-}
-
-// oxlint-disable-next-line max-statements
-export const updateRepositoryLabels = async (
-  octokit: Octokit,
-  owner: string,
-  repo: string
-) => {
-  const labels = await getRepositoryLabels(octokit, owner, repo)
-  const labelNames: Record<string, RepositoryLabel> = {}
-  for (const label of labels) {
-    labelNames[label.name] = label
-  }
-
-  let created = 0
-  let updated = 0
-  for (const label of REPO_LABELS) {
-    if (label.name in labelNames) {
-      const currentLabel = labelNames[label.name]
-      if (
-        currentLabel.color !== label.color ||
-        currentLabel.description !== label.description
-      ) {
-        await updateRepositoryLabel(octokit, owner, repo, label)
-        updated += 1
-      }
-    } else {
-      await createRepositoryLabel(octokit, owner, repo, label)
-      created += 1
-    }
-  }
-  console.log(
-    `Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`
-  )
 }
 
 export interface UpdateRepositoryLabelParams {
@@ -273,4 +239,38 @@ export const createRepositoryLabel = async (
     owner,
     repo
   })
+}
+
+// oxlint-disable-next-line max-statements
+export const updateRepositoryLabels = async (
+  octokit: Octokit,
+  owner: string,
+  repo: string
+) => {
+  const labels = await getRepositoryLabels(octokit, owner, repo)
+  const labelNames: Record<string, RepositoryLabel> = {}
+  for (const label of labels) {
+    labelNames[label.name] = label
+  }
+
+  let created = 0
+  let updated = 0
+  for (const label of REPO_LABELS) {
+    if (label.name in labelNames) {
+      const currentLabel = labelNames[label.name]
+      if (
+        currentLabel.color !== label.color ||
+        currentLabel.description !== label.description
+      ) {
+        await updateRepositoryLabel(octokit, owner, repo, label)
+        updated += 1
+      }
+    } else {
+      await createRepositoryLabel(octokit, owner, repo, label)
+      created += 1
+    }
+  }
+  console.log(
+    `Created ${created.toString()} and updated ${updated.toString()} labels for ${owner}/${repo}`
+  )
 }

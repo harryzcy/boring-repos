@@ -1,4 +1,5 @@
-import { App, type Octokit } from 'octokit'
+import { App } from 'octokit'
+import type { Octokit } from 'octokit'
 
 import {
   getAppID,
@@ -20,11 +21,8 @@ export const getAuthenticatedApp = async () => {
     privateKey
   })
 
-  const resp = await app.octokit.rest.apps.getAuthenticated()
-  const HTTP_OK = 200
-  if (resp.status !== HTTP_OK) {
-    throw new Error('Failed to authenticate app')
-  }
+  // Throws a RequestError if the app credentials are not valid
+  await app.octokit.rest.apps.getAuthenticated()
 
   return app
 }

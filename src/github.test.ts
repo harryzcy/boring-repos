@@ -1,4 +1,4 @@
-import { assert, describe, expect, test } from 'vitest'
+import { assert, describe, expect, it } from 'vitest'
 
 import {
   createRepositoryLabel,
@@ -11,14 +11,14 @@ import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
 const isIntegration = process.env.INTEGRATION === 'true'
 
 describe.runIf(!isIntegration)('GitHub API', () => {
-  test('Get app user ID', async () => {
+  it('get app user ID', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
     const id = await getAppUserID(octokit)
     assert(id > 0)
   })
 
-  test('Get forked repos', async () => {
+  it('get forked repos', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
     const repos = await getRepositories(octokit, { isFork: true })
@@ -40,7 +40,7 @@ describe.runIf(!isIntegration)('GitHub API', () => {
 })
 
 describe.runIf(!isIntegration)('GitHub API - Repository', () => {
-  test('Get a repository', async () => {
+  it('get a repository', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
     const repo = await octokit.request('GET /repos/{owner}/{repo}', {
@@ -53,7 +53,7 @@ describe.runIf(!isIntegration)('GitHub API - Repository', () => {
     assert(!repo.data.fork)
   })
 
-  test('Get repository labels', async () => {
+  it('get repository labels', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
     const labels = await getRepositoryLabels(
@@ -68,7 +68,7 @@ describe.runIf(!isIntegration)('GitHub API - Repository', () => {
 
 describe.runIf(isIntegration)('GitHub API - Integration', () => {
   // oxlint-disable-next-line max-statements
-  test('Manage repository labels', async () => {
+  it('manage repository labels', async () => {
     const app = await getAuthenticatedApp()
     const { octokit } = await getInstallationOctokit(app)
     const repo = 'boring-repos'

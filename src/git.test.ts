@@ -1,30 +1,36 @@
-import { assert } from 'console'
-import fs from 'fs'
-import { test } from 'vitest'
+import { describe, expect, it } from 'vitest'
+
+import fs from 'node:fs/promises'
 
 import { checkIfBranchExists, cloneRepository } from './git.js'
 
-test('Clone repository', async () => {
-  const dir = await cloneRepository(
-    'https://github.com/harryzcy/boring-repos',
-    'boring-repos'
-  )
-  assert(dir.startsWith('boring-repos'))
-  assert(fs.existsSync(dir))
+describe('Git', () => {
+  it('clone repository', async () => {
+    const dir = await cloneRepository(
+      'https://github.com/harryzcy/boring-repos',
+      'boring-repos'
+    )
+    expect(dir).toContain('boring-repos')
+    const exists = await fs
+      .access(dir)
+      .then(() => true)
+      .catch(() => false)
+    expect(exists).toBe(true)
 
-  fs.rmSync(dir, { force: true, recursive: true })
-})
+    await fs.rm(dir, { force: true, recursive: true })
+  })
 
-test('Check branch exists', async () => {
-  const dir = await cloneRepository(
-    'https://github.com/harryzcy/boring-repos',
-    'boring-repos'
-  )
-  const exists = await checkIfBranchExists(dir, 'main')
-  assert(exists)
+  it('check branch exists', async () => {
+    const dir = await cloneRepository(
+      'https://github.com/harryzcy/boring-repos',
+      'boring-repos'
+    )
+    const exists = await checkIfBranchExists(dir, 'main')
+    expect(exists).toBe(true)
 
-  const notExists = await checkIfBranchExists(dir, 'not-exists')
-  assert(!notExists)
+    const notExists = await checkIfBranchExists(dir, 'not-exists')
+    expect(notExists).toBe(false)
 
-  fs.rmSync(dir, { force: true, recursive: true })
+    await fs.rm(dir, { force: true, recursive: true })
+  })
 })
