@@ -49,7 +49,9 @@ export const REPO_LABELS = [
   }
 ]
 
-export const getAppUserID = async (octokit: Octokit): Promise<number> => {
+export const getAppUserID = async (
+  octokit: Octokit
+): Promise<number | bigint> => {
   const response = await octokit.request('GET /users/{username}', {
     username: 'boring-repos[bot]'
   })
@@ -135,7 +137,7 @@ export const getRepository = async (
 export const fastForwardRepository = async (
   repo: GetRepositoryResponse,
   token: string,
-  appUserID: number
+  appUserID: number | bigint
 ) => {
   console.log(`Fast-forwarding ${repo.full_name}`)
   try {

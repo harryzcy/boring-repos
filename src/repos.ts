@@ -9,7 +9,7 @@ import {
 
 export const syncGitHubRepos = async (
   octokit: Octokit,
-  appUserID: number,
+  appUserID: number | bigint,
   token: string
 ) => {
   const forkedRepos = await getRepositories(octokit, { isFork: true })
