@@ -70,7 +70,10 @@ export const cloneRepository = async (gitURL: string, repoName: string) => {
   return targetDir
 }
 
-export const updateCommitter = async (repoDir: string, appUserID: number) => {
+export const updateCommitter = async (
+  repoDir: string,
+  appUserID: number | bigint
+) => {
   await runCommand(`git -C ${repoDir} config user.name ${APP_NAME}`)
   await runCommand(
     `git -C ${repoDir} config user.email "${appUserID.toString()}+${APP_NAME}@users.noreply.github.com"`
