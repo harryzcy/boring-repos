@@ -1,1 +1,1 @@
-export const NODE_VERSION = '24.18.1'
+export const NODE_VERSION = '24.19.0'
