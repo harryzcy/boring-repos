@@ -57,6 +57,7 @@
         "allowArrowFunctions": true
       }
     ],
+    "one-var": ["error", "never"],
     "no-continue": "off",
     "no-undefined": "error",
     "no-use-before-define": "error",
