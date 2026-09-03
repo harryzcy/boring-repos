@@ -24,7 +24,7 @@
     "octokit": "5.0.5"
   },
   "devDependencies": {
-    "@octokit/types": "17.0.0",
+    "@octokit/types": "18.0.0",
     "@octokit/webhooks-types": "7.6.1",
     "@tsconfig/node-lts": "24.0.1",
     "@types/node": "26.4.0",
