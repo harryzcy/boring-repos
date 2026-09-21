@@ -14,9 +14,8 @@ locals {
   ]...)
 }
 
-# Guard 1: always-present resource whose precondition aborts the whole plan.
-# A precondition on github_issue_label itself would NOT work — instances being
-# destroyed are not evaluated, which is precisely the case we need to catch.
+# The precondition lives here, not on github_issue_label: instances being
+# destroyed are not evaluated, and that is the case worth catching.
 resource "terraform_data" "repo_discovery_guard" {
   input = length(local.repos)
 
