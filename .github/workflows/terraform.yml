@@ -1,0 +1,76 @@
+name: OpenTofu
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+  schedule:
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: opentofu
+  cancel-in-progress: false
+
+jobs:
+  opentofu:
+    name: Plan and Apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    env:
+      AWS_ENDPOINT_URL_S3: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: harryzcy
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_wrapper: false
+
+      - name: Init
+        run: tofu init -input=false
+
+      - name: Plan
+        run: tofu plan -input=false -out=plan.out
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      # Refuse to apply a plan that deletes more than two repos' worth of
+      # labels. A discovery failure looks like mass deletion; a deleted repo
+      # does not.
+      - name: Check Deletions
+        run: |
+          tofu show -json plan.out \
+            | jq -e '[.resource_changes[]? | select(.change.actions | index("delete"))] | length
+                     | if . > 12 then error("refusing: \(.) deletions planned") else . end'
+
+      - name: Apply
+        if: github.event_name != 'pull_request'
+        run: tofu apply -input=false plan.out
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
