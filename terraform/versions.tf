@@ -9,10 +9,11 @@ terraform {
     }
   }
 
-  # Partial config: endpoints/credentials supplied via -backend-config in CI,
-  # because backend blocks cannot interpolate variables.
+  # Endpoint and credentials come from AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID
+  # and AWS_SECRET_ACCESS_KEY.
   backend "s3" {
-    key    = "repos/terraform.tfstate"
+    bucket = "boring-repos-tfstate"
+    key    = "terraform.tfstate"
     region = "auto"
 
     skip_credentials_validation = true
