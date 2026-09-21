@@ -60,14 +60,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      # Refuse to apply a plan that deletes more than two repos' worth of
-      # labels. A discovery failure looks like mass deletion; a deleted repo
-      # does not.
+      # Refuse to apply a plan that deletes more than six repos' worth of
+      # labels. Archiving a batch of repos stays under it; a partial search
+      # result does not.
       - name: Check Deletions
         run: |
           tofu show -json plan.out \
             | jq -e '[.resource_changes[]? | select(.change.actions | index("delete"))] | length
-                     | if . > 12 then error("refusing: \(.) deletions planned") else . end'
+                     | if . > 36 then error("refusing: \(.) deletions planned") else . end'
 
       - name: Apply
         if: github.event_name != 'pull_request'
