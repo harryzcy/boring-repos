@@ -3,8 +3,7 @@ import type { Octokit } from 'octokit'
 import {
   fastForwardRepository,
   getRepositories,
-  getRepository,
-  updateRepositoryLabels
+  getRepository
 } from './github.js'
 
 export const syncGitHubRepos = async (
@@ -22,12 +21,5 @@ export const syncGitHubRepos = async (
       continue
     }
     await fastForwardRepository(result.data, token, appUserID)
-  }
-}
-
-export const updateGitHubLabels = async (octokit: Octokit) => {
-  const originalRepos = await getRepositories(octokit, { isFork: false })
-  for (const repo of originalRepos) {
-    await updateRepositoryLabels(octokit, repo.owner.login, repo.name)
   }
 }
