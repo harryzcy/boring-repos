@@ -36,3 +36,27 @@ resource "github_issue_label" "managed" {
   color       = each.value.color
   description = each.value.description
 }
+
+# The provider POSTs unconditionally, so a label that already exists fails
+# with 422. Adopt those instead: both GitHub's defaults on a new repo and
+# everything the TypeScript reconciler has written are already there.
+data "github_issue_labels" "existing" {
+  for_each   = local.repos
+  repository = each.key
+}
+
+locals {
+  adoptable = merge([
+    for repo, labels in data.github_issue_labels.existing : {
+      for label in labels.labels :
+      "${repo}:${label.name}" => true
+      if contains(keys(local.labels), label.name)
+    }
+  ]...)
+}
+
+import {
+  for_each = { for key, spec in local.bindings : key => spec if lookup(local.adoptable, key, false) }
+  to       = github_issue_label.managed[each.key]
+  id       = each.key
+}
