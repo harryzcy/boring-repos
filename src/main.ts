@@ -10,15 +10,14 @@ import {
   getAuthenticatedApp,
   getInstallationOctokit
 } from './auth/install.js'
-import { syncGitHubRepos, updateGitHubLabels } from './repos.js'
 import { getAppUserID } from './github.js'
+import { syncGitHubRepos } from './repos.js'
 
 const runGitHub = async (octokit: Octokit, installationId: number) => {
   const appUserID = await getAppUserID(octokit)
   const token = await getAccessToken(octokit, installationId)
 
   await syncGitHubRepos(octokit, appUserID, token)
-  await updateGitHubLabels(octokit)
 }
 
 const runCloudflare = async (octokit: Octokit) => {

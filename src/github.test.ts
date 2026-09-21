@@ -1,11 +1,6 @@
 import { assert, describe, expect, it } from 'vitest'
 
-import {
-  createRepositoryLabel,
-  getAppUserID,
-  getRepositories,
-  getRepositoryLabels
-} from './github.js'
+import { getAppUserID, getRepositories } from './github.js'
 import { getAuthenticatedApp, getInstallationOctokit } from './auth/install.js'
 
 const isIntegration = process.env.INTEGRATION === 'true'
@@ -51,65 +46,5 @@ describe.runIf(!isIntegration)('GitHub API - Repository', () => {
     expect(repo.status).toBe(HTTP_OK)
     assert(repo.data.full_name === 'harryzcy/boring-repos')
     assert(!repo.data.fork)
-  })
-
-  it('get repository labels', async () => {
-    const app = await getAuthenticatedApp()
-    const { octokit } = await getInstallationOctokit(app)
-    const labels = await getRepositoryLabels(
-      octokit,
-      'harryzcy',
-      'boring-repos'
-    )
-    assert(labels.length > 0)
-    assert(labels.some((label) => label.name === 'dependencies'))
-  })
-})
-
-describe.runIf(isIntegration)('GitHub API - Integration', () => {
-  // oxlint-disable-next-line max-statements
-  it('manage repository labels', async () => {
-    const app = await getAuthenticatedApp()
-    const { octokit } = await getInstallationOctokit(app)
-    const repo = 'boring-repos'
-    const owner = 'harryzcy'
-    const labels = await getRepositoryLabels(octokit, owner, repo)
-    const labelNames = labels.map((label) => label.name)
-
-    // Create a new label
-    const newLabel = 'test-label'
-    if (!labelNames.includes(newLabel)) {
-      await createRepositoryLabel(octokit, owner, repo, {
-        color: 'f29513',
-        description: 'This is a test label',
-        name: newLabel
-      })
-    }
-
-    // Update the new label
-    await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
-      description: 'This is an updated test label',
-      name: newLabel,
-      owner,
-      repo
-    })
-
-    // Get the updated label
-    const resp = await octokit.request(
-      'GET /repos/{owner}/{repo}/labels/{name}',
-      {
-        name: newLabel,
-        owner,
-        repo
-      }
-    )
-    expect(resp.data.description).toBe('This is an updated test label')
-
-    // Delete the new label
-    await octokit.request('DELETE /repos/{owner}/{repo}/labels/{name}', {
-      name: newLabel,
-      owner,
-      repo
-    })
   })
 })
