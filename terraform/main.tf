@@ -14,9 +14,8 @@ locals {
   ]...)
 }
 
-# Guard 1: always-present resource whose precondition aborts the whole plan.
-# A precondition on github_issue_label itself would NOT work — instances being
-# destroyed are not evaluated, which is precisely the case we need to catch.
+# The precondition lives here, not on github_issue_label: instances being
+# destroyed are not evaluated, and that is the case worth catching.
 resource "terraform_data" "repo_discovery_guard" {
   input = length(local.repos)
 
@@ -35,4 +34,26 @@ resource "github_issue_label" "managed" {
   name        = each.value.name
   color       = each.value.color
   description = each.value.description
+}
+
+# The provider POSTs unconditionally, so existing labels must be adopted.
+data "github_issue_labels" "existing" {
+  for_each   = local.repos
+  repository = each.key
+}
+
+locals {
+  adoptable = merge([
+    for repo, labels in data.github_issue_labels.existing : {
+      for label in labels.labels :
+      "${repo}:${label.name}" => true
+      if contains(keys(local.labels), label.name)
+    }
+  ]...)
+}
+
+import {
+  for_each = { for key, spec in local.bindings : key => spec if lookup(local.adoptable, key, false) }
+  to       = github_issue_label.managed[each.key]
+  id       = each.key
 }
