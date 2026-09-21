@@ -37,9 +37,7 @@ resource "github_issue_label" "managed" {
   description = each.value.description
 }
 
-# The provider POSTs unconditionally, so a label that already exists fails
-# with 422. Adopt those instead: both GitHub's defaults on a new repo and
-# everything the TypeScript reconciler has written are already there.
+# The provider POSTs unconditionally, so existing labels must be adopted.
 data "github_issue_labels" "existing" {
   for_each   = local.repos
   repository = each.key
