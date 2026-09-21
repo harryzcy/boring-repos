@@ -46,3 +46,12 @@ node_modules
 src/build_info.ts
 coverage
 temp
+
+### OpenTofu ###
+# .terraform.lock.hcl is tracked on purpose.
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform.tfstate.lock.info
+terraform/*.tfplan
+terraform/plan.out
