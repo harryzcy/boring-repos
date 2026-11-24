@@ -31,7 +31,7 @@
     "@vitest/coverage-v8": "5.1.1",
     "jiti": "2.7.0",
     "oxlint": "1.94.0",
-    "oxlint-tsgolint": "7.0.2007",
+    "oxlint-tsgolint": "7.0.2008",
     "prettier": "3.10.1",
     "prettier-plugin-organize-imports": "4.3.0",
     "rimraf": "6.1.4",
